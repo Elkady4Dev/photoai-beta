@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Routing</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <p>If you see this, the preview server is working.</p>
+    <p>Try accessing: <a href="/photoai-beta/">Home</a></p>
+    <p>Try accessing: <a href="/photoai-beta/photo-capture">Photo Capture</a></p>
+    <script>
+        console.log('Current URL:', window.location.href);
+        console.log('Base path should be:', window.location.pathname.startsWith('/photoai-beta/') ? '/photoai-beta' : '/');
+    </script>
+</body>
+</html>
