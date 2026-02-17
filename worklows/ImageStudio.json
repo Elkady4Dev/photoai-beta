@@ -1,0 +1,413 @@
+{
+  "name": "ImageStudio",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "passport-photo-generator",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "id": "7d4f6289-9d3c-4579-8114-a68daa873e45",
+      "name": "1. Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1056,
+        256
+      ],
+      "webhookId": "passport-photo-api",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse incoming request from Lovable\nconst body = $input.first().json.body;\n\n// Extract data from the request\nconst imageBase64 = body.image;\nconst photoType = body.photoType || 'Passport (40x60mm)';\nconst includeShoulders = body.includeShoulders !== false;\nconst mimeType = body.mimeType || 'image/png';\nconst model = body.model || 'gemini-2.5-flash-preview-image-generation';\nconst callbackUrl = body.callbackUrl; // URL to send each completed image\nconst jobId = body.jobId || 'job-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9); // Unique ID for this generation job\n\nif (!imageBase64) {\n  throw new Error('No image provided. Please include base64 encoded image in request body.');\n}\n\nif (!callbackUrl) {\n  throw new Error('No callbackUrl provided. Please include callbackUrl in request body.');\n}\n\nreturn {\n  json: {\n    photoType,\n    includeShoulders,\n    mimeType,\n    model,\n    callbackUrl,\n    jobId,\n    receivedAt: new Date().toISOString()\n  },\n  binary: {\n    Upload_Photo: {\n      data: imageBase64,\n      mimeType: mimeType,\n      fileName: 'uploaded_photo.png'\n    }\n  }\n};"
+      },
+      "id": "195a7a45-a6ea-49c9-ab57-b9a19082666b",
+      "name": "2. Parse Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -864,
+        256
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const geminiOutput = $input.first().json;\nconst analysisRaw = geminiOutput.candidates?.[0]?.content?.parts?.[0]?.text || '';\n\nconst formData = $('2. Parse Request').first().json;\nconst photoType = formData.photoType;\nconst model = formData.model;\nconst callbackUrl = formData.callbackUrl;\nconst jobId = formData.jobId;\n\nlet config = { dpi: 300, model };\nswitch(photoType) {\n  case 'Passport (40x60mm)':\n    config = { ...config, widthMM: 40, heightMM: 60, name: 'Passport' };\n    break;\n  case 'Visa (35x45mm)':\n    config = { ...config, widthMM: 35, heightMM: 45, name: 'Visa' };\n    break;\n  case 'ID Card (35x35mm)':\n    config = { ...config, widthMM: 35, heightMM: 35, name: 'ID Card' };\n    break;\n  default:\n    config = { ...config, widthMM: 40, heightMM: 60, name: 'Passport' };\n}\nconfig.widthPx = Math.round((config.widthMM / 25.4) * config.dpi);\nconfig.heightPx = Math.round((config.heightMM / 25.4) * config.dpi);\n\nconst finalPrompt = `Transform into professional studio passport photo. Pure white background (#FFFFFF), studio lighting, sharp focus on face. DO NOT CHANGE face features, expression, hair, clothing.`;\n\nreturn {\n  json: { prompt: finalPrompt, config, analysis: analysisRaw, callbackUrl, jobId },\n  binary: $('2. Parse Request').first().binary\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "63ea7cc1-090f-4f48-a920-8f4a6ef9a212",
+      "name": "5. Build Prompt",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first();\nconst basePrompt = input.json.prompt;\nconst config = input.json.config;\nconst binary = input.binary;\nconst callbackUrl = input.json.callbackUrl;\nconst jobId = input.json.jobId;\n\nconst variations = [\n  { id: 1, lighting: 'Key light 45deg front-left, soft fill 30%' },\n  { id: 2, lighting: 'Broader key, stronger fill for flat look' },\n  { id: 3, lighting: 'Key light higher, butterfly shadow' },\n  { id: 4, lighting: 'Even clamshell lighting' }\n];\n\nreturn variations.map(v => ({\n  json: {\n    prompt: basePrompt + ' Lighting: ' + v.lighting,\n    variationId: v.id,\n    config,\n    callbackUrl,\n    jobId,\n    totalVariations: 4\n  },\n  binary: binary\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        16
+      ],
+      "id": "78bdf418-4a4d-4cd1-8fe0-aa4d83756468",
+      "name": "6. Create Variations",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the API response (single item from loop)\nconst response = $input.first().json;\n\n// Get metadata from Build Generate Request node\nconst requestData = $('7. Build Generate Request').first().json;\n\nconst variationId = requestData.variationId;\nconst callbackUrl = requestData.callbackUrl;\nconst jobId = requestData.jobId;\nconst totalVariations = requestData.totalVariations || 4;\nconst config = requestData.config;\n\n// Extract image from Gemini response\nlet imageBase64 = '';\nlet mimeType = 'image/png';\n\nconst parts = response.candidates?.[0]?.content?.parts || [];\nfor (const part of parts) {\n  if (part.inlineData) {\n    imageBase64 = part.inlineData.data;\n    mimeType = part.inlineData.mimeType || 'image/png';\n    break;\n  }\n}\n\nconst timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);\nconst filename = (config.name || 'photo').toLowerCase() + '_photo_v' + variationId + '_' + timestamp + '.png';\n\n// Build callback payload\nconst callbackPayload = {\n  jobId: jobId,\n  variationId: variationId,\n  totalVariations: totalVariations,\n  success: !!imageBase64,\n  photoType: config.name || 'Passport',\n  dimensions: (config.widthMM || 40) + 'mm x ' + (config.heightMM || 60) + 'mm',\n  resolution: (config.widthPx || 472) + 'px x ' + (config.heightPx || 709) + 'px',\n  dpi: config.dpi || 300,\n  filename: filename,\n  imageBase64: imageBase64,\n  mimeType: mimeType,\n  completedAt: new Date().toISOString()\n};\n\nreturn {\n  json: {\n    callbackUrl: callbackUrl,\n    callbackPayload: callbackPayload,\n    variationId: variationId\n  }\n};"
+      },
+      "id": "abaf2237-3933-4bc0-aed2-cb0d2d44d394",
+      "name": "9. Package Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        224
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop is done - return summary\nconst jobId = $('2. Parse Request').first().json.jobId;\n\nreturn {\n  json: {\n    success: true,\n    message: 'All variations processed and sent via callbacks',\n    jobId: jobId,\n    totalVariations: 4,\n    completedAt: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        32
+      ],
+      "id": "76b94e33-f0dd-4366-90d4-98ce9f6921bd",
+      "name": "11. Prepare Response",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "id": "f749089e-a474-4212-afdd-4bcca8f88de5",
+      "name": "12. Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1200,
+        384
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyAtVgVKv_tD0R7V6x8BJnLK2rC5mp-aelk"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -448,
+        256
+      ],
+      "id": "1f7e4c9a-f4c9-4e0f-b496-0ebf7e6f4e03",
+      "name": "4. Analyze Image"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyAtVgVKv_tD0R7V6x8BJnLK2rC5mp-aelk"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        112
+      ],
+      "id": "cdb28c46-471f-4579-822a-8c271d1f8697",
+      "name": "8. Generate Photo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const binary = $input.first().binary.Upload_Photo;\n\nreturn {\n  json: {\n    url: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent\",\n    body: {\n      contents: [{\n        parts: [\n          {\n            text: \"Analyze this photo for passport/ID use. Check: BACKGROUND, HEAD POSITION, LIGHTING, EXPRESSION, QUALITY. Respond in JSON.\"\n          },\n          {\n            inline_data: {\n              mime_type: binary.mimeType,\n              data: binary.data\n            }\n          }\n        ]\n      }]\n    }\n  },\n  binary: $input.first().binary\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -656,
+        256
+      ],
+      "id": "66c29121-3bdb-41b0-b43e-3cab3a99ad39",
+      "name": "3. Build Analyze Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process single item from loop\nconst item = $input.first();\nconst binary = item.binary.Upload_Photo;\nconst prompt = item.json.prompt;\nconst variationId = item.json.variationId;\nconst config = item.json.config;\nconst callbackUrl = item.json.callbackUrl;\nconst jobId = item.json.jobId;\nconst totalVariations = item.json.totalVariations;\n\nreturn {\n  json: {\n    url: \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-image-generation:generateContent\",\n    body: {\n      contents: [{\n        parts: [\n          {\n            text: prompt\n          },\n          {\n            inline_data: {\n              mime_type: binary.mimeType,\n              data: binary.data\n            }\n          }\n        ]\n      }],\n      generationConfig: {\n        responseModalities: [\"TEXT\", \"IMAGE\"]\n      }\n    },\n    variationId: variationId,\n    config: config,\n    callbackUrl: callbackUrl,\n    jobId: jobId,\n    totalVariations: totalVariations\n  },\n  binary: item.binary\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "db9c15a3-f68b-41fd-9560-be0324bc7500",
+      "name": "7. Build Generate Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.callbackUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.callbackPayload }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "callback-sender",
+      "name": "10. Send Callback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        400
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "loop-variations",
+      "name": "6b. Loop Variations",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        384,
+        -112
+      ],
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "1. Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "2. Parse Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Parse Request": {
+      "main": [
+        [
+          {
+            "node": "3. Build Analyze Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. Build Prompt": {
+      "main": [
+        [
+          {
+            "node": "6. Create Variations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11. Prepare Response": {
+      "main": [
+        [
+          {
+            "node": "12. Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "5. Build Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8. Generate Photo": {
+      "main": [
+        [
+          {
+            "node": "9. Package Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. Build Analyze Request": {
+      "main": [
+        [
+          {
+            "node": "4. Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7. Build Generate Request": {
+      "main": [
+        [
+          {
+            "node": "8. Generate Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9. Package Result": {
+      "main": [
+        [
+          {
+            "node": "10. Send Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6. Create Variations": {
+      "main": [
+        [
+          {
+            "node": "6b. Loop Variations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10. Send Callback": {
+      "main": [
+        [
+          {
+            "node": "6b. Loop Variations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6b. Loop Variations": {
+      "main": [
+        [
+          {
+            "node": "11. Prepare Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "7. Build Generate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "75e60aad-db81-49b7-92c0-6c040e82fb12",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5b329b61d9c0387da4970f3121fc1ae387d98885cd3cb2aa53d40c9c1b7151e8"
+  },
+  "id": "ovEb9tghDjplyWUf",
+  "tags": []
+}
