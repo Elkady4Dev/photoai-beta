@@ -5,10 +5,12 @@ import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { User, Package, Clock, CheckCircle, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const ProfilePage = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t, isRTL } = useLanguage();
 
   const handleSignOut = async () => {
     await signOut();
@@ -36,10 +38,10 @@ export const ProfilePage = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-retro-red border-[3px] border-retro-dark rounded-lg px-4 py-1.5 shadow-retro-sm mb-6">
               <User className="w-4 h-4 text-retro-cream" />
-              <span className="font-display text-sm tracking-wider text-retro-cream">PROFILE</span>
+              <span className="font-display text-sm tracking-wider text-retro-cream">{t('profile.createBadge')}</span>
             </div>
             <h1 className="font-display text-[3rem] md:text-[4.5rem] text-retro-dark leading-[0.9] mb-6 tracking-tight">
-              WELCOME,
+              {t('profile.welcome')}
               <br />
               <span className="font-display-serif italic text-retro-red text-[2rem] md:text-[3rem]">
                 {displayName}
@@ -49,7 +51,7 @@ export const ProfilePage = () => {
               {user?.email}
             </p>
             <p className="text-retro-dark-mid text-base max-w-2xl mx-auto font-medium mb-12">
-              View your order history and manage your PhotoID Pro account
+              {t('profile.subtitle')}
             </p>
           </div>
         </div>
@@ -72,7 +74,7 @@ export const ProfilePage = () => {
                       </div>
                       <div>
                         <h3 className="font-display text-lg text-retro-dark">{order.type}</h3>
-                        <p className="text-retro-dark-mid text-sm">Order #{order.id}</p>
+                        <p className="text-retro-dark-mid text-sm">{t('profile.orderNumber')} {order.id}</p>
                       </div>
                     </div>
                     <div className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
@@ -85,34 +87,34 @@ export const ProfilePage = () => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-retro-dark-mid">
                         <Clock className="w-4 h-4" />
-                        <span className="text-sm">Order Date</span>
+                        <span className="text-sm">{t('profile.orderDate')}</span>
                       </div>
                       <p className="text-retro-dark font-medium">{order.date}</p>
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-retro-dark-mid">
                         <Package className="w-4 h-4" />
-                        <span className="text-sm">Delivery</span>
+                        <span className="text-sm">{t('profile.delivery')}</span>
                       </div>
                       <p className="text-retro-dark font-medium">{order.delivery}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between pt-4 border-t-[2px] border-retro-dark/20">
-                    <span className="text-retro-dark-mid text-sm">Total</span>
+                    <span className="text-retro-dark-mid text-sm">{t('profile.total')}</span>
                     <span className="font-display text-xl text-retro-dark">{order.price}</span>
                   </div>
                   <div className="flex gap-3 pt-4">
                     {order.status === "completed" ? (
                       <Button variant="outline" size="sm" className="border-[2px] border-retro-teal hover:bg-retro-teal hover:text-retro-cream">
-                        <CheckCircle className="w-4 h-4 mr-2" />Download
+                        <CheckCircle className="w-4 h-4 mr-2" />{t('profile.download')}
                       </Button>
                     ) : (
                       <Button variant="hero" size="sm" disabled>
-                        <Clock className="w-4 h-4 mr-2" />Processing
+                        <Clock className="w-4 h-4 mr-2" />{t('profile.processing')}
                       </Button>
                     )}
                     <Button variant="outline" size="sm" className="border-[2px] border-retro-dark hover:bg-retro-dark hover:text-retro-cream">
-                      View Details
+                      {t('profile.viewDetails')}
                     </Button>
                   </div>
                 </div>
@@ -121,14 +123,14 @@ export const ProfilePage = () => {
 
             <div className="mt-12 text-center">
               <div className="sticker bg-retro-dark rounded-xl p-8 shadow-retro-lg text-retro-cream">
-                <h3 className="font-display text-xl mb-6">Account Actions</h3>
+                <h3 className="font-display text-xl mb-6">{t('profile.accountActions')}</h3>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Button variant="outline" size="lg" className="w-full sm:w-auto border-[2px] border-retro-cream hover:bg-retro-cream hover:text-retro-dark text-retro-cream"
                     onClick={() => navigate("/photo-capture")}>
-                    <Package className="w-5 h-5 mr-2" />New Order
+                    <Package className="w-5 h-5 mr-2" />{t('profile.newOrder')}
                   </Button>
                   <Button variant="hero" size="lg" className="hover:shadow-retro-hover" onClick={handleSignOut}>
-                    <LogOut className="w-5 h-5 mr-2" />Sign Out
+                    <LogOut className="w-5 h-5 mr-2" />{t('profile.signOut')}
                   </Button>
                 </div>
               </div>

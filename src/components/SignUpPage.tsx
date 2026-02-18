@@ -5,12 +5,10 @@ import { Button } from "@/components/ui/button";
 import { User, Camera, Shield, Clock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { SocialAuthButtons } from "@/components/SocialAuthButtons";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
   const { signUp } = useAuth();
-  const { t, isRTL } = useLanguage();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -67,6 +65,8 @@ export const SignUpPage = () => {
       const { error } = await signUp(formData.email, formData.password, formData.name);
 
       if (error) {
+        // Supabase will return an error here only if email confirmation is OFF
+        // If confirmation is ON, duplicate emails get { error: null } for security
         if (error.message.includes('already registered')) {
           setErrors({ submit: 'This email is already registered. Please sign in instead.' });
         } else {
@@ -94,11 +94,11 @@ export const SignUpPage = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-retro-teal border-[3px] border-retro-dark rounded-lg px-4 py-1.5 shadow-retro-sm mb-6">
               <User className="w-4 h-4 text-retro-cream" />
-              <span className="font-display text-sm tracking-wider text-retro-cream">{t('signup.createBadge')}</span>
+              <span className="font-display text-sm tracking-wider text-retro-cream">SIGN UP</span>
             </div>
             
             <h1 className="font-display text-[3rem] md:text-[4.5rem] text-retro-dark leading-[0.9] mb-6 tracking-tight">
-              {t('signup.title')}
+              CREATE YOUR
               <br />
               <span className="font-display-serif italic text-retro-red text-[2rem] md:text-[3rem]">
                 Account
@@ -106,7 +106,7 @@ export const SignUpPage = () => {
             </h1>
             
             <p className="text-retro-dark-mid text-lg max-w-2xl mx-auto font-medium mb-12">
-              {t('signup.subtitle')}
+              Join PhotoID Pro and start creating perfect ID photos in seconds
             </p>
           </div>
         </div>
@@ -140,7 +140,7 @@ export const SignUpPage = () => {
                 {/* Name Field */}
                 <div>
                   <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                    {t('signup.fullName')}
+                    FULL NAME
                   </label>
                   <input
                     type="text"
@@ -156,7 +156,7 @@ export const SignUpPage = () => {
                 {/* Email Field */}
                 <div>
                   <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                    {t('signup.emailAddress')}
+                    EMAIL ADDRESS
                   </label>
                   <input
                     type="email"
@@ -172,7 +172,7 @@ export const SignUpPage = () => {
                 {/* Password Field */}
                 <div>
                   <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                    {t('signup.password')}
+                    PASSWORD
                   </label>
                   <div className="relative">
                     <input
@@ -198,7 +198,7 @@ export const SignUpPage = () => {
                 {/* Confirm Password Field */}
                 <div>
                   <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                    {t('signup.confirmPassword')}
+                    CONFIRM PASSWORD
                   </label>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -222,19 +222,10 @@ export const SignUpPage = () => {
                       disabled={loading}
                     />
                     <span className="text-sm text-retro-dark-mid">
-                      {t('signup.agreement').split(' ').map((word, i) => {
-                        if (word === 'Terms' || word === 'شروط') {
-                          return <span key={i} className="text-retro-teal font-medium">{word}</span>;
-                        } else if (word === 'Service' || word === 'الخدمة') {
-                          return <span key={i} className="text-retro-teal font-medium">{word}</span>;
-                        } else if (word === 'Privacy' || word === 'الخصوصية') {
-                          return <span key={i} className="text-retro-teal font-medium">{word}</span>;
-                        } else if (word === 'Policy' || word === 'سياسة') {
-                          return <span key={i} className="text-retro-teal font-medium">{word}</span>;
-                        } else {
-                          return <span key={i}>{word} </span>;
-                        }
-                      })}
+                      I agree to the{" "}
+                      <span className="text-retro-teal font-medium">Terms and Conditions</span>
+                      {" "}and{" "}
+                      <span className="text-retro-teal font-medium">Privacy Policy</span>
                     </span>
                   </label>
                   {errors.terms && <p className="text-retro-red text-sm">{errors.terms}</p>}
@@ -251,12 +242,12 @@ export const SignUpPage = () => {
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-retro-cream border-t-transparent rounded-full animate-spin mr-2" />
-                      {t('signup.creating')}
+                      Creating Account...
                     </>
                   ) : (
                     <>
                       <User className="w-5 h-5 mr-2" />
-                      {t('signup.signupButton')}
+                      Create Account
                     </>
                   )}
                 </Button>
@@ -264,14 +255,14 @@ export const SignUpPage = () => {
                 {/* Sign In Link */}
                 <div className="text-center pt-2">
                   <p className="text-retro-dark-mid text-sm">
-                    {t('signup.haveAccount')}{" "}
+                    Already have an account?{" "}
                     <button
                       type="button"
                       onClick={() => navigate("/signin")}
                       className="text-retro-teal font-medium hover:underline"
                       disabled={loading}
                     >
-                      {t('signup.signin')}
+                      Sign In
                     </button>
                   </p>
                 </div>

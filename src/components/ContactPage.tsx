@@ -185,7 +185,7 @@ export const ContactPage = () => {
                       <Mail className="w-5 h-5 lg:w-6 lg:h-6 text-retro-cream" />
                       <div>
                         <div className="font-medium text-base lg:text-lg">{t('contact.email')}</div>
-                        <div className="text-retro-cream/70 text-sm lg:text-base">support@photoid.pro</div>
+                        <div className="text-retro-cream/70 text-sm lg:text-base">support@sortak</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 lg:gap-4">

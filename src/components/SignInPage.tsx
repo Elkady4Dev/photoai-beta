@@ -117,7 +117,7 @@ export const SignInPage = () => {
             </div>
             
             <h1 className="font-display text-[3rem] md:text-[4.5rem] text-retro-dark leading-[0.9] mb-6 tracking-tight">
-              {t('signin.title')}
+              {t('signin.welcome')}
               <br />
               <span className="font-display-serif italic text-retro-red text-[2rem] md:text-[3rem]">
                 {t('signin.back')}
@@ -153,7 +153,7 @@ export const SignInPage = () => {
                     {/* Email Field */}
                     <div>
                       <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                        EMAIL ADDRESS
+                        {t('signin.emailAddress')}
                       </label>
                       <input
                         type="email"
@@ -171,7 +171,7 @@ export const SignInPage = () => {
                     {/* Password Field */}
                     <div>
                       <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                        PASSWORD
+                        {t('signin.password')}
                       </label>
                       <div className="relative">
                         <input
@@ -179,7 +179,7 @@ export const SignInPage = () => {
                           value={formData.password}
                           onChange={(e) => setFormData({...formData, password: e.target.value})}
                           className="w-full px-4 py-3 pr-12 border-[2px] border-retro-dark rounded-lg bg-retro-cream/50 focus:outline-none focus:ring-2 focus:ring-retro-red focus:ring-offset-2 font-medium text-retro-dark placeholder-retro-dark/30"
-                          placeholder="Enter your password"
+                          placeholder={t('signin.passwordPlaceholder')}
                           disabled={loading}
                         />
                         <button
@@ -206,7 +206,7 @@ export const SignInPage = () => {
                           className="w-4 h-4 border-[2px] border-retro-dark rounded"
                           disabled={loading}
                         />
-                        <span className="text-sm text-retro-dark-mid">Remember me</span>
+                        <span className="text-sm text-retro-dark-mid">{t('signin.rememberMe')}</span>
                       </label>
                       
                       <button
@@ -215,7 +215,7 @@ export const SignInPage = () => {
                         className="text-sm text-retro-red font-medium hover:underline"
                         disabled={loading}
                       >
-                        Forgot password?
+                        {t('signin.forgotPassword')}
                       </button>
                     </div>
 
@@ -224,12 +224,12 @@ export const SignInPage = () => {
                       {loading ? (
                         <>
                           <div className="w-5 h-5 border-2 border-retro-cream border-t-transparent rounded-full animate-spin mr-2" />
-                          Signing In...
+                          {t('signin.signingIn')}
                         </>
                       ) : (
                         <>
                           <UserCircle className="w-5 h-5 mr-2" />
-                          Sign In
+                          {t('signin.signinButton')}
                           <ArrowRight className="w-5 h-5 ml-2" />
                         </>
                       )}
@@ -238,14 +238,14 @@ export const SignInPage = () => {
                     {/* Sign Up Link */}
                     <div className="text-center pt-2">
                       <p className="text-retro-dark-mid text-sm">
-                        Don't have an account?{" "}
+                        {t('signin.noAccount')}{" "}
                         <button
                           type="button"
                           onClick={() => navigate("/signup")}
                           className="text-retro-teal font-medium hover:underline"
                           disabled={loading}
                         >
-                          Create Account
+                          {t('signin.createAccount')}
                         </button>
                       </p>
                     </div>
@@ -258,12 +258,12 @@ export const SignInPage = () => {
                     onClick={() => { setShowResetPassword(false); setResetEmail(""); setResetMessage(""); }}
                     className="text-retro-red hover:underline text-sm flex items-center gap-2 mb-6"
                   >
-                    ← Back to sign in
+                    {t('signin.backToSignin')}
                   </button>
 
-                  <h3 className="font-display text-2xl text-retro-dark mb-2">Reset Password</h3>
+                  <h3 className="font-display text-2xl text-retro-dark mb-2">{t('signin.resetPassword')}</h3>
                   <p className="text-retro-dark-mid text-sm mb-6">
-                    Enter your email and we'll send you a reset link.
+                    {t('signin.resetDescription')}
                   </p>
 
                   {resetMessage && (
@@ -281,7 +281,7 @@ export const SignInPage = () => {
                   <form onSubmit={handleResetPassword} className="space-y-6">
                     <div>
                       <label className="block text-retro-dark font-display text-sm mb-2 tracking-wider">
-                        EMAIL ADDRESS
+                        {t('signin.emailAddress')}
                       </label>
                       <input
                         type="email"
@@ -297,12 +297,12 @@ export const SignInPage = () => {
                       {resetLoading ? (
                         <>
                           <div className="w-5 h-5 border-2 border-retro-cream border-t-transparent rounded-full animate-spin mr-2" />
-                          Sending...
+                          {t('signin.sending')}
                         </>
                       ) : (
                         <>
                           <Mail className="w-5 h-5 mr-2" />
-                          Send Reset Link
+                          {t('signin.sendReset')}
                         </>
                       )}
                     </Button>

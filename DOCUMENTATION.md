@@ -268,7 +268,7 @@ npm run preview  # Preview production build
 ## 📞 Support
 
 ### Contact Information
-- **Email**: support@photoidpro.com (dummy)
+- **Email**: support@sortak.com (dummy)
 - **Phone**: +1 (555) 123-4567 (dummy)
 - **Hours**: Mon-Fri 9AM-6PM EST
 

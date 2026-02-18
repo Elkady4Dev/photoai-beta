@@ -286,7 +286,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
             <div className="mb-14 animate-slide-up-3">
               <div className="inline-flex items-center gap-2 bg-retro-dark text-retro-cream px-4 py-1.5 rounded-lg border-[3px] border-retro-dark shadow-retro-sm mb-5">
                 <Film className="w-4 h-4" />
-                <span className="font-display text-sm tracking-wider">HOW IT WORKS</span>
+                <span className="font-display text-sm tracking-wider">{t('howItWorks.howItWorks')}</span>
               </div>
               <h2 className="font-display text-[2rem] sm:text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] text-retro-dark leading-[0.9] tracking-tight">
                 {t('howItWorks.title')}
@@ -369,7 +369,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 bg-retro-red border-[3px] border-retro-dark rounded-lg px-4 py-1.5 shadow-retro-sm mb-5">
                 <Film className="w-4 h-4 text-retro-cream" />
-                <span className="font-display text-sm tracking-wider text-retro-cream">FEATURES</span>
+                <span className="font-display text-sm tracking-wider text-retro-cream">{t('features.features')}</span>
               </div>
               <h2 className="font-display text-[3rem] md:text-[4.5rem] text-retro-dark leading-[0.9] tracking-tight mb-4">
                 {t('features.title')}
@@ -481,7 +481,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 bg-retro-teal border-[3px] border-retro-dark rounded-lg px-4 py-1.5 shadow-retro-sm mb-5">
                 <Aperture className="w-4 h-4 text-retro-cream" />
-                <span className="font-display text-sm tracking-wider text-retro-cream">ABOUT US</span>
+                <span className="font-display text-sm tracking-wider text-retro-cream">{t('about.about')}</span>
               </div>
               <h2 className="font-display text-[3rem] md:text-[4.5rem] text-retro-dark leading-[0.9] tracking-tight mb-4">
                 {t('about.title')}
@@ -539,7 +539,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                       </div>
                       <div className="space-y-2">
                         <div className="font-display text-3xl text-retro-cream">50K+</div>
-                        <div className="text-sm text-retro-cream/70 font-medium">Happy Customers</div>
+                        <div className="text-sm text-retro-cream/70 font-medium"></div>
                       </div>
                     </div>
                   </div>
@@ -547,11 +547,11 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-4 bg-retro-cream/10 border-[2px] border-retro-dark/20 rounded-lg">
                       <div className="font-display text-2xl text-retro-cream">99.8%</div>
-                      <div className="text-xs text-retro-cream/70">Acceptance Rate</div>
+                      <div className="text-xs text-retro-cream/70">{t('about.acceptanceRate')}</div>
                     </div>
                     <div className="text-center p-4 bg-retro-cream/10 border-[2px] border-retro-dark/20 rounded-lg">
                       <div className="font-display text-2xl text-retro-cream">150+</div>
-                      <div className="text-xs text-retro-cream/70">Countries</div>
+                      <div className="text-xs text-retro-cream/70">{t('about.countries')}</div>
                     </div>
                   </div>
                 </div>
@@ -595,7 +595,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 bg-retro-mustard border-[3px] border-retro-dark rounded-lg px-4 py-1.5 shadow-retro-sm mb-5">
                 <Zap className="w-4 h-4 text-retro-dark" />
-                <span className="font-display text-sm tracking-wider text-retro-dark">PRICING</span>
+                <span className="font-display text-sm tracking-wider text-retro-dark">{t('pricing.pricing')}</span>
               </div>
               <h2 className="font-display text-[3rem] md:text-[4.5rem] text-retro-dark leading-[0.9] tracking-tight mb-4">
                 {t('pricing.title')}
@@ -620,8 +620,8 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                 <div className="text-center mb-6">
                   <h3 className="font-display text-2xl text-retro-dark mb-2">{t('pricing.basic')}</h3>
                   <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="font-display text-4xl text-retro-dark">$9</span>
-                    <span className="text-retro-dark-mid font-medium">/photo</span>
+                    <span className="font-display text-4xl text-retro-dark">{t('pricing.basicPrice')}</span>
+                    <span className="text-retro-dark-mid font-medium">{t('pricing.perPhoto')}</span>
                   </div>
                   <p className="text-sm text-retro-dark-mid">{t('pricing.basicDesc')}</p>
                 </div>
@@ -649,7 +649,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                   onClick={handleGetStarted}
                   disabled={loading}
                 >
-                  {loading ? t('loading') : t('nav.getStarted')}
+                  {loading ? t('loading') : t('pricing.getStarted')}
                 </Button>
               </div>
 
@@ -662,8 +662,8 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                 <div className="text-center mb-6">
                   <h3 className="font-display text-2xl text-retro-cream mb-2">{t('pricing.pro')}</h3>
                   <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="font-display text-4xl text-retro-cream">$19</span>
-                    <span className="text-retro-cream/70 font-medium">/photo</span>
+                    <span className="font-display text-4xl text-retro-cream">{t('pricing.proPrice')}</span>
+                    <span className="text-retro-cream/70 font-medium">{t('pricing.perPhoto')}</span>
                   </div>
                   <p className="text-sm text-retro-cream/70">{t('pricing.proDesc')}</p>
                 </div>
@@ -692,7 +692,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                   onClick={handleGetStarted}
                   disabled={loading}
                 >
-                  {loading ? t('loading') : t('nav.getStarted')}
+                  {loading ? t('loading') : t('pricing.goPro')}
                 </Button>
               </div>
 
@@ -705,8 +705,8 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                 <div className="text-center mb-6">
                   <h3 className="font-display text-2xl text-retro-dark mb-2">{t('pricing.enterprise')}</h3>
                   <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="font-display text-4xl text-retro-dark">Custom</span>
-                    <span className="text-retro-dark-mid font-medium">/photo</span>
+                    <span className="font-display text-4xl text-retro-dark">{t('pricing.enterprisePrice')}</span>
+                    <span className="text-retro-dark-mid font-medium">{t('pricing.perPhoto')}</span>
                   </div>
                   <p className="text-sm text-retro-dark-mid">{t('pricing.enterpriseDesc')}</p>
                 </div>
@@ -737,7 +737,7 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
                   onClick={handleGetStarted}
                   disabled={loading}
                 >
-                  {loading ? 'Loading...' : 'Contact Sales'}
+                  {loading ? 'Loading...' : t('pricing.contactSales')}
                 </Button>
               </div>
             </div>

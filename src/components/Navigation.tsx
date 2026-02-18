@@ -16,7 +16,7 @@ interface NavigationProps {
 export const Navigation = ({ 
   currentStep, 
   onBack, 
-  showBackButton, 
+  showBackButton,
   onGetStarted, 
   isLandingPage = true 
 }: NavigationProps) => {
