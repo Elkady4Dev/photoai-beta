@@ -8,23 +8,12 @@ export const PhotoCapturePage = () => {
   const { navigateWithToken } = useTokenNavigation();
 
   const handlePhotoCapture = (photo: string) => {
-    const updates = { capturedPhoto: photo, step: 2 };
-    updateState(updates);
-
-    const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
-    localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
-
-    // Single navigation — no window.location.href
+    updateState({ capturedPhoto: photo, step: 2 });
     navigateWithToken('/document-type');
   };
 
   const handleBack = () => {
-    const updates = { step: 0 };
-    updateState(updates);
-
-    const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
-    localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
-
+    updateState({ step: 0 });
     navigateWithToken('/');
   };
 

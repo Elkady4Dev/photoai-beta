@@ -8,23 +8,12 @@ export const DocumentTypePage = () => {
   const { navigateWithToken } = useTokenNavigation();
 
   const handleSelect = (type: "passport" | "visa" | "id") => {
-    const updates = { documentType: type, step: 3 };
-    updateState(updates);
-
-    const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
-    localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
-
-    // Single navigation — no window.location.href
+    updateState({ documentType: type, step: 3 });
     navigateWithToken('/photo-variations');
   };
 
   const handleBack = () => {
-    const updates = { step: 1 };
-    updateState(updates);
-
-    const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
-    localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
-
+    updateState({ step: 1 });
     navigateWithToken('/photo-capture');
   };
 

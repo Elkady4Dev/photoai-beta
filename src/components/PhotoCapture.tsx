@@ -242,6 +242,9 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
     if (ctx) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
+      // Flip horizontally to match the mirrored preview
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0);
       const imageData = canvas.toDataURL("image/jpeg", 0.95);
       setCapturedImage(imageData);
@@ -327,6 +330,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
                   playsInline
                   muted
                   className="w-full h-full object-cover"
+                  style={{ transform: 'scaleX(-1)' }}
                 />
               )}
               {/* Face guide overlay */}

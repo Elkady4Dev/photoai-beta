@@ -22,6 +22,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LanguageProvider } from "@/contexts/LanguageContext"; 
 import { DemoPage } from "./components/DemoPage";
 import { TokenPreserver } from "./components/TokenPreserver";
+import { PhotoFlowProvider } from "@/contexts/PhotoFlowContext";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
         <ErrorBoundary>
           <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <AuthProvider>
+              <PhotoFlowProvider>
               <TokenPreserver />
               <Routes>
                 {/* Public routes */}
@@ -113,6 +115,7 @@ const App = () => (
                 
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </PhotoFlowProvider>
             </AuthProvider>
           </BrowserRouter>
         </ErrorBoundary>

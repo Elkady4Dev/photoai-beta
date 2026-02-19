@@ -9,27 +9,16 @@ export const PhotoVariationsPage = () => {
   const { navigateWithToken } = useTokenNavigation();
 
   const handleSelectVariation = (index: number, variationData?: PhotoResult) => {
-    const updates = { 
-      selectedVariation: index, 
+    updateState({
+      selectedVariation: index,
       selectedVariationData: variationData || null,
-      step: 4 
-    };
-    updateState(updates);
-    
-    const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
-    localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
-    
-    // Single navigation — no window.location.href
+      step: 4
+    });
     navigateWithToken('/delivery-confirmation');
   };
 
   const handleBack = () => {
-    const updates = { step: 2 };
-    updateState(updates);
-    
-    const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
-    localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
-    
+    updateState({ step: 2 });
     navigateWithToken('/document-type');
   };
 
