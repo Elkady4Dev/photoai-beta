@@ -93,15 +93,66 @@ function IcaoDetails({ compliance }: { compliance: IcaoCompliance }) {
   );
 }
 
-function VariationSkeleton({ variationId, aspectClass = 'aspect-[3/4]' }: { variationId: number; aspectClass?: string }) {
+function VariationSkeleton({
+  variationId,
+  aspectClass = 'aspect-[3/4]',
+  startTime
+}: {
+  variationId: number;
+  aspectClass?: string;
+  startTime: number;
+}) {
+  const [elapsed, setElapsed] = useState(0);
+  const expectedDuration = 30; // Expected ~30 seconds per variation
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const seconds = Math.floor((now - startTime) / 1000);
+      setElapsed(seconds);
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [startTime]);
+
+  // Progress fills up over expected duration, then slows down but keeps going
+  const progressPercent = elapsed < expectedDuration
+    ? (elapsed / expectedDuration) * 90  // Fill to 90% in expected time
+    : 90 + Math.min((elapsed - expectedDuration) / 60 * 10, 9); // Slowly creep to 99% after
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return mins > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : `${secs}s`;
+  };
+
   return (
     <div className={`relative ${aspectClass} rounded-2xl overflow-hidden shadow-card bg-muted`}>
       <Skeleton className="w-full h-full rounded-2xl" />
+
+      {/* Variation number badge */}
       <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center text-sm font-semibold text-foreground">
         {variationId}
       </div>
-      <div className="absolute inset-0 flex items-center justify-center">
+
+      {/* Center content: spinner + timer + progress */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4">
         <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+
+        {/* Timer display */}
+        <div className="text-center">
+          <div className="text-2xl font-mono font-bold text-foreground">
+            {formatTime(elapsed)}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Generating...
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full max-w-[120px]">
+          <Progress value={progressPercent} className="h-1.5" />
+        </div>
       </div>
     </div>
   );
@@ -252,6 +303,7 @@ export const PhotoVariations = ({
 
   const [selectedVariationId, setSelectedVariationId] = useState<number | null>(null);
   const [croppedResults, setCroppedResults] = useState<Map<number, PhotoResult>>(new Map());
+  const [jobStartTime, setJobStartTime] = useState<number>(Date.now());
   const { toast } = useToast();
   const hasSubmitted = useRef(false);
   const croppingRef = useRef<Set<number>>(new Set());
@@ -344,6 +396,7 @@ export const PhotoVariations = ({
       }
     }
 
+    setJobStartTime(Date.now());
     submitPhoto({
       imageBase64,
       mimeType,
@@ -457,7 +510,7 @@ export const PhotoVariations = ({
                       }}
                     />
                   ) : (
-                    <VariationSkeleton key={vid} variationId={vid} aspectClass={aspect} />
+                    <VariationSkeleton key={vid} variationId={vid} aspectClass={aspect} startTime={jobStartTime} />
                   );
                 })}
               </div>
