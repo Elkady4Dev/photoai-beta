@@ -103,7 +103,7 @@ function VariationSkeleton({
   startTime: number;
 }) {
   const [elapsed, setElapsed] = useState(0);
-  const expectedDuration = 30; // Expected ~30 seconds per variation
+  const expectedDuration = 120; // Expected ~2 minutes total
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -117,8 +117,8 @@ function VariationSkeleton({
 
   // Progress fills up over expected duration, then slows down but keeps going
   const progressPercent = elapsed < expectedDuration
-    ? (elapsed / expectedDuration) * 90  // Fill to 90% in expected time
-    : 90 + Math.min((elapsed - expectedDuration) / 60 * 10, 9); // Slowly creep to 99% after
+    ? (elapsed / expectedDuration) * 95  // Fill to 95% over 2 minutes
+    : 95 + Math.min((elapsed - expectedDuration) / 120 * 4, 4); // Slowly creep to 99% after
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
