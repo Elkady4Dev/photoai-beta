@@ -1,22 +1,21 @@
 import { DocumentTypeSelection } from "@/components/DocumentTypeSelection";
 import { usePhotoFlowState } from "@/hooks/usePhotoFlowState";
 import { Navigation } from "@/components/Navigation";
-import { useTokenNavigation } from '@/hooks/useTokenNavigation';
+import { useTokenNavigation } from "@/hooks/useTokenNavigation";
 
 export const DocumentTypePage = () => {
   const { state, updateState } = usePhotoFlowState();
-  const { navigateWithToken, getCurrentToken } = useTokenNavigation();
+  const { navigateWithToken } = useTokenNavigation();
 
   const handleSelect = (type: "passport" | "visa" | "id") => {
-    navigateWithToken('/photo-variations');
     const updates = { documentType: type, step: 3 };
     updateState(updates);
 
-    // Manually flush to localStorage before hard navigation
     const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
     localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
 
-    window.location.href = `${import.meta.env.BASE_URL}photo-variations`;
+    // Single navigation — no window.location.href
+    navigateWithToken('/photo-variations');
   };
 
   const handleBack = () => {
@@ -26,7 +25,7 @@ export const DocumentTypePage = () => {
     const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
     localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
 
-    window.location.href = `${import.meta.env.BASE_URL}photo-capture`;
+    navigateWithToken('/photo-capture');
   };
 
   return (

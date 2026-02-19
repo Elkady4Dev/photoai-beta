@@ -5,18 +5,17 @@ import { useTokenNavigation } from '@/hooks/useTokenNavigation';
 
 export const PhotoCapturePage = () => {
   const { state, updateState } = usePhotoFlowState();
-  const { navigateWithToken, getCurrentToken } = useTokenNavigation();
+  const { navigateWithToken } = useTokenNavigation();
 
   const handlePhotoCapture = (photo: string) => {
-    navigateWithToken('/document-type');
     const updates = { capturedPhoto: photo, step: 2 };
     updateState(updates);
 
-    // Manually flush to localStorage before hard navigation
     const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
     localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
 
-    window.location.href = `${import.meta.env.BASE_URL}document-type`;
+    // Single navigation — no window.location.href
+    navigateWithToken('/document-type');
   };
 
   const handleBack = () => {
@@ -26,7 +25,7 @@ export const PhotoCapturePage = () => {
     const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
     localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
 
-    window.location.href = `${import.meta.env.BASE_URL}`;
+    navigateWithToken('/');
   };
 
   return (

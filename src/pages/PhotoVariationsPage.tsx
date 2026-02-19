@@ -2,9 +2,11 @@ import { PhotoVariations } from "@/components/PhotoVariations";
 import { usePhotoFlowState } from "@/hooks/usePhotoFlowState";
 import type { PhotoResult } from "@/hooks/use-photo-job";
 import { Navigation } from "@/components/Navigation";
+import { useTokenNavigation } from "@/hooks/useTokenNavigation";
 
 export const PhotoVariationsPage = () => {
   const { state, updateState } = usePhotoFlowState();
+  const { navigateWithToken } = useTokenNavigation();
 
   const handleSelectVariation = (index: number, variationData?: PhotoResult) => {
     const updates = { 
@@ -14,11 +16,11 @@ export const PhotoVariationsPage = () => {
     };
     updateState(updates);
     
-    // Manually flush to localStorage before hard navigation
     const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
     localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
     
-    window.location.href = `${import.meta.env.BASE_URL}delivery-confirmation`;
+    // Single navigation — no window.location.href
+    navigateWithToken('/delivery-confirmation');
   };
 
   const handleBack = () => {
@@ -28,12 +30,11 @@ export const PhotoVariationsPage = () => {
     const current = JSON.parse(localStorage.getItem('photoFlowState') || '{}');
     localStorage.setItem('photoFlowState', JSON.stringify({ ...current, ...updates }));
     
-    window.location.href = `${import.meta.env.BASE_URL}document-type`;
+    navigateWithToken('/document-type');
   };
 
   if (!state.documentType || !state.capturedPhoto) {
-    // Redirect to capture if missing required data
-    window.location.href = `${import.meta.env.BASE_URL}photo-capture`;
+    navigateWithToken('/photo-capture');
     return null;
   }
 
