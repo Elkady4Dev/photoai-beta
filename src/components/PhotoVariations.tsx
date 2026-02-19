@@ -10,6 +10,12 @@ import { WatermarkOverlay } from "@/components/WatermarkOverlay";
 import type { DocumentType } from "@/pages/Index";
 
 const getTesterToken = (): string | null => {
+  // 1. Check URL params first (?access=token)
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlToken = urlParams.get('access');
+  if (urlToken) return urlToken;
+
+  // 2. Fall back to localStorage (old tester system)
   try {
     const raw = localStorage.getItem('tester_auth');
     if (!raw) return null;
