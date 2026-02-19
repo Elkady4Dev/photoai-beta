@@ -57,6 +57,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error;
       setProfile(data);
+
+      // Store token invisibly in sessionStorage — never in URL
+      if (data?.token) {
+        sessionStorage.setItem('_t', data.token);
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
       setProfile(null);
@@ -78,6 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fetchProfile(session.user.id);
       } else {
         setProfile(null);
+        sessionStorage.removeItem('_t'); // Clear token on logout
       }
       setLoading(false);
     });
@@ -107,7 +113,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // OAuth sign in - opens provider popup/redirect
   const signInWithOAuth = async (provider: 'google' | 'facebook' | 'apple') => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -122,7 +127,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Use a generation (decrements remaining count)
   const useGeneration = async () => {
     if (!user) {
       return { allowed: false, remaining: 0, error: 'Not logged in' };
@@ -135,8 +139,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) throw error;
 
       const result = data[0];
-      
-      // Refresh profile to update used_gens count
       await fetchProfile(user.id);
 
       return {
@@ -150,7 +152,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Get detailed token/generation info
   const getTokenInfo = async (): Promise<TokenInfo | null> => {
     if (!user) return null;
 
@@ -167,6 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    sessionStorage.removeItem('_t'); // Clear token on sign out
     await supabase.auth.signOut();
   };
 

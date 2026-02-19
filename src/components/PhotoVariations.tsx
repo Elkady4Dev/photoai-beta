@@ -10,12 +10,16 @@ import { WatermarkOverlay } from "@/components/WatermarkOverlay";
 import type { DocumentType } from "@/pages/Index";
 
 const getTesterToken = (): string | null => {
-  // 1. Check URL params first (?access=token)
+  // 1. sessionStorage (logged-in users — stored invisibly by TokenPreserver)
+  const sessionToken = sessionStorage.getItem('_t');
+  if (sessionToken) return sessionToken;
+
+  // 2. URL fallback for dev/tester tokens (e.g. keshodevtoken)
   const urlParams = new URLSearchParams(window.location.search);
   const urlToken = urlParams.get('access');
   if (urlToken) return urlToken;
 
-  // 2. Fall back to localStorage (old tester system)
+  // 3. Legacy localStorage fallback
   try {
     const raw = localStorage.getItem('tester_auth');
     if (!raw) return null;

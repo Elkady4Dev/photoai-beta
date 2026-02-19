@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 export const TokenPreserver = () => {
@@ -8,15 +8,20 @@ export const TokenPreserver = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const token = profile?.token;
-    const currentToken = searchParams.get('access');
+    // Store token in sessionStorage whenever profile loads
+    if (profile?.token) {
+      sessionStorage.setItem('_t', profile.token);
+    }
 
-    if (token && !currentToken) {
+    // If there's an ?access= token in the URL, move it to sessionStorage and clean the URL
+    const urlToken = searchParams.get('access');
+    if (urlToken) {
+      sessionStorage.setItem('_t', urlToken);
       const newParams = new URLSearchParams(searchParams);
-      newParams.set('access', token);
+      newParams.delete('access');
       setSearchParams(newParams, { replace: true });
     }
-  }, [location.pathname, profile, searchParams, setSearchParams]);
+  }, [location.pathname, profile]);
 
   return null;
 };

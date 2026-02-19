@@ -1,49 +1,29 @@
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
-/**
- * Automatically manages the ?access=token URL parameter
- * - Adds user's token to URL when logged in
- * - Preserves manually-added tester tokens
- * - Provides navigation helper that maintains token
- */
 export const useTokenNavigation = () => {
-  const { user, profile } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { profile } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const currentToken = searchParams.get('access');
+  const getCurrentToken = (): string | null => {
+    // 1. sessionStorage (logged-in users, set by TokenPreserver)
+    const sessionToken = sessionStorage.getItem('_t');
+    if (sessionToken) return sessionToken;
 
-    // If user is logged in and has a token
-    if (user && profile?.token) {
-      // Only update URL if there's no token, or if it's different from user's token
-      if (!currentToken) {
-        // No token in URL - add user's token
-        const newParams = new URLSearchParams(searchParams);
-        newParams.set('access', profile.token);
-        setSearchParams(newParams, { replace: true });
-      }
-      // If currentToken exists but is different, keep it (might be a tester token)
-    }
-  }, [user, profile, searchParams, setSearchParams]);
+    // 2. Fallback to profile (in case sessionStorage was cleared)
+    if (profile?.token) return profile.token;
 
+    // 3. URL fallback for dev/tester tokens that aren't in sessionStorage yet
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('access');
+  };
+
+  // Plain navigation — token is NOT added to URL
   const navigateWithToken = (path: string, options?: { replace?: boolean }) => {
-    const token = searchParams.get('access') || profile?.token;
-    
-    if (token) {
-      navigate(`${path}?access=${token}`, options);
-    } else {
-      navigate(path, options);
-    }
+    navigate(path, options);
   };
 
-  const getCurrentToken = () => {
-    return searchParams.get('access') || profile?.token || null;
-  };
-
-  return { 
+  return {
     navigateWithToken,
     getCurrentToken,
     userToken: profile?.token,
