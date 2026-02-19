@@ -115,43 +115,86 @@ function VariationSkeleton({
     return () => clearInterval(interval);
   }, [startTime]);
 
-  // Progress fills up over expected duration, then slows down but keeps going
-  const progressPercent = elapsed < expectedDuration
-    ? (elapsed / expectedDuration) * 95  // Fill to 95% over 2 minutes
-    : 95 + Math.min((elapsed - expectedDuration) / 120 * 4, 4); // Slowly creep to 99% after
+  // Countdown from expected duration
+  const remaining = Math.max(0, expectedDuration - elapsed);
+  const isOvertime = elapsed > expectedDuration;
+
+  // Progress fills up over expected duration
+  const progressPercent = Math.min((elapsed / expectedDuration) * 100, 100);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return mins > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : `${secs}s`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div className={`relative ${aspectClass} rounded-2xl overflow-hidden shadow-card bg-muted`}>
-      <Skeleton className="w-full h-full rounded-2xl" />
+    <div className={`relative ${aspectClass} rounded-2xl overflow-hidden shadow-card bg-gradient-to-br from-card to-muted`}>
+      {/* Animated background shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
 
       {/* Variation number badge */}
-      <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center text-sm font-semibold text-foreground">
+      <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-gradient-accent flex items-center justify-center text-sm font-bold text-accent-foreground shadow-lg">
         {variationId}
       </div>
 
-      {/* Center content: spinner + timer + progress */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4">
-        <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
-
-        {/* Timer display */}
-        <div className="text-center">
-          <div className="text-2xl font-mono font-bold text-foreground">
-            {formatTime(elapsed)}
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            Generating...
+      {/* Center content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
+        {/* Circular progress indicator */}
+        <div className="relative w-20 h-20 mb-4">
+          {/* Background circle */}
+          <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+            <circle
+              cx="18"
+              cy="18"
+              r="15.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="text-muted-foreground/20"
+            />
+            <circle
+              cx="18"
+              cy="18"
+              r="15.5"
+              fill="none"
+              stroke="url(#progressGradient)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeDasharray={`${progressPercent * 0.97} 100`}
+              className="transition-all duration-300"
+            />
+            <defs>
+              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="hsl(var(--accent))" />
+                <stop offset="100%" stopColor="hsl(var(--secondary))" />
+              </linearGradient>
+            </defs>
+          </svg>
+          {/* Center spinner */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Loader2 className="w-6 h-6 text-accent animate-spin" />
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="w-full max-w-[120px]">
-          <Progress value={progressPercent} className="h-1.5" />
+        {/* Countdown timer */}
+        <div className="text-center">
+          <div className={`font-display text-3xl font-bold tracking-tight ${isOvertime ? 'text-secondary' : 'text-foreground'}`}>
+            {isOvertime ? formatTime(elapsed - expectedDuration) : formatTime(remaining)}
+          </div>
+          <div className="text-xs font-medium text-muted-foreground mt-1 uppercase tracking-wider">
+            {isOvertime ? 'Almost there...' : 'Remaining'}
+          </div>
+        </div>
+
+        {/* Linear progress bar */}
+        <div className="w-full max-w-[100px] mt-4">
+          <div className="h-1 bg-muted-foreground/20 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-accent to-secondary rounded-full transition-all duration-300"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
       </div>
     </div>
