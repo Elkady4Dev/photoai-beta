@@ -203,6 +203,29 @@
     box-shadow: var(--shadow-retro);
   }
 
+  /* ===== INVERSE CONTAINER =====
+     Light mode: dark background with cream text (the "dark card" look)
+     Dark mode:  flips to a lighter navy so it stands out from the page bg
+     Use this instead of bg-retro-dark whenever you want a container
+     that inverts correctly in dark mode.                               */
+  .bg-retro-inverse {
+    background-color: hsl(var(--retro-dark));
+    color: hsl(var(--retro-cream));
+  }
+
+  .dark .bg-retro-inverse {
+    background-color: hsl(220 38% 22%);   /* lighter navy — distinct from page bg */
+    color: hsl(var(--retro-dark));         /* near-white in dark mode */
+  }
+
+  /* Child text helpers that respect the inversion */
+  .bg-retro-inverse .text-retro-cream { color: hsl(var(--retro-cream)); }
+  .dark .bg-retro-inverse .text-retro-cream { color: hsl(var(--retro-dark)); }
+  .bg-retro-inverse .text-retro-cream\/70 { color: hsl(var(--retro-cream) / 0.7); }
+  .dark .bg-retro-inverse .text-retro-cream\/70 { color: hsl(var(--retro-dark) / 0.7); }
+  .bg-retro-inverse .border-retro-cream { border-color: hsl(var(--retro-cream)); }
+  .dark .bg-retro-inverse .border-retro-cream { border-color: hsl(var(--retro-dark)); }
+
   /* ===== GRAIN TEXTURE OVERLAY ===== */
   .grain-overlay::after {
     content: "";

@@ -446,7 +446,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
       <section className="pb-20">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <div className="bg-retro-dark border-[3px] border-retro-dark rounded-xl p-10 md:p-16 text-center relative overflow-hidden shadow-retro-lg">
+            <div className="bg-retro-inverse border-[3px] border-retro-dark rounded-xl p-10 md:p-16 text-center relative overflow-hidden shadow-retro-lg">
               {/* Decorative retro shapes */}
               <div className="absolute top-5 left-6 w-10 h-10 border-[3px] border-retro-teal/40 rounded-lg rotate-12" />
               <div className="absolute bottom-6 right-10 w-8 h-8 bg-retro-mustard/30 border-[2px] border-retro-mustard/40 rounded-full" />
@@ -536,7 +536,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
 
               {/* Visual side */}
               <div className="relative">
-                <div className="sticker bg-retro-dark rounded-xl p-8 rotate-2 shadow-retro-lg">
+                <div className="sticker bg-retro-inverse rounded-xl p-8 rotate-2 shadow-retro-lg">
                   <div className="aspect-[4/3] bg-retro-teal/10 border-[2px] border-retro-dark/20 rounded-lg flex items-center justify-center mb-6">
                     <div className="text-center">
                       <div className="w-24 h-24 bg-retro-teal border-[3px] border-retro-dark rounded-lg mx-auto mb-4 flex items-center justify-center shadow-retro-sm">
@@ -659,7 +659,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
               </div>
 
               {/* Pro Plan */}
-              <div className="sticker bg-retro-dark rounded-xl p-8 -rotate-1 hover:rotate-0 transition-all duration-300 relative shadow-retro-lg">
+              <div className="sticker bg-retro-inverse rounded-xl p-8 -rotate-1 hover:rotate-0 transition-all duration-300 relative shadow-retro-lg">
                 <div className="absolute -top-3 -right-3 bg-retro-red border-[3px] border-retro-dark rounded-lg px-3 py-1 shadow-retro-sm">
                   <span className="text-xs font-black uppercase text-retro-cream">{t('pricing.bestValue')}</span>
                 </div>

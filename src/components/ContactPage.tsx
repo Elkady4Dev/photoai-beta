@@ -178,28 +178,28 @@ export const ContactPage = () => {
               {/* Contact Info */}
               <div className="space-y-8 lg:space-y-10">
                 {/* Quick Contact */}
-                <div className="sticker bg-retro-dark rounded-xl p-6 lg:p-8 shadow-retro-lg text-retro-cream">
+                <div className="sticker bg-retro-inverse rounded-xl p-6 lg:p-8 shadow-retro-lg">
                   <h3 className="font-display text-xl lg:text-2xl mb-4 lg:mb-6">{t('contact.quickContact')}</h3>
                   <div className="space-y-4 lg:space-y-6">
                     <div className="flex items-center gap-3 lg:gap-4">
-                      <Mail className="w-5 h-5 lg:w-6 lg:h-6 text-retro-cream" />
+                      <Mail className="w-5 h-5 lg:w-6 lg:h-6" />
                       <div>
                         <div className="font-medium text-base lg:text-lg">{t('contact.email')}</div>
-                        <div className="text-retro-cream/70 text-sm lg:text-base">support@sortak</div>
+                        <div className="text-retro-dark-mid text-sm lg:text-base">support@sortak</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 lg:gap-4">
-                      <Phone className="w-5 h-5 lg:w-6 lg:h-6 text-retro-cream" />
+                      <Phone className="w-5 h-5 lg:w-6 lg:h-6" />
                       <div>
                         <div className="font-medium text-base lg:text-lg">{t('contact.phone')}</div>
-                        <div className="text-retro-cream/70 text-sm lg:text-base">1-800-PHOTO-ID</div>
+                        <div className="text-retro-dark-mid text-sm lg:text-base">1-800-PHOTO-ID</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 lg:gap-4">
-                      <MapPin className="w-5 h-5 lg:w-6 lg:h-6 text-retro-cream" />
+                      <MapPin className="w-5 h-5 lg:w-6 lg:h-6" />
                       <div>
                         <div className="font-medium text-base lg:text-lg">{t('contact.hours')}</div>
-                        <div className="text-retro-cream/70 text-sm lg:text-base">Mon-Fri 9AM-6PM EST</div>
+                        <div className="text-retro-dark-mid text-sm lg:text-base">Mon-Fri 9AM-6PM EST</div>
                       </div>
                     </div>
                   </div>

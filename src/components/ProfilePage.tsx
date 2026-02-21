@@ -315,13 +315,13 @@ export const ProfilePage = () => {
             )}
 
             <div className="mt-12 text-center">
-              <div className="sticker bg-retro-dark rounded-xl p-8 shadow-retro-lg text-retro-cream">
+              <div className="sticker bg-retro-inverse rounded-xl p-8 shadow-retro-lg">
                 <h3 className="font-display text-xl mb-6">{t('profile.accountActions')}</h3>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full sm:w-auto border-[2px] border-retro-cream hover:bg-retro-cream hover:text-retro-dark text-retro-cream"
+                    className="w-full sm:w-auto border-[2px] border-retro-dark hover:bg-retro-dark hover:text-retro-cream"
                     onClick={() => navigate("/photo-capture")}
                   >
                     <Package className="w-5 h-5 mr-2" />

@@ -198,11 +198,11 @@ export const FAQPage = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="sticker bg-retro-dark rounded-xl p-8 shadow-retro-lg">
-              <h3 className="font-display text-2xl text-retro-cream mb-4">
+            <div className="sticker bg-retro-inverse rounded-xl p-8 shadow-retro-lg">
+              <h3 className="font-display text-2xl mb-4">
                 {t('faq.stillNeedHelp')}
               </h3>
-              <p className="text-retro-cream/70 text-base mb-6 leading-relaxed">
+              <p className="text-retro-dark-mid text-base mb-6 leading-relaxed">
                 {t('faq.stillNeedHelpDesc')}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -210,7 +210,7 @@ export const FAQPage = () => {
                   variant="outline" 
                   size="lg"
                   onClick={() => navigate('/contact')}
-                  className="w-full sm:w-auto border-[2px] border-retro-cream hover:bg-retro-cream hover:text-retro-dark text-retro-cream"
+                  className="w-full sm:w-auto border-[2px] border-retro-dark hover:bg-retro-dark hover:text-retro-cream"
                 >
                   <Mail className={`w-5 h-5 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                   {t('faq.emailSupport')}

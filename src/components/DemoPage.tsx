@@ -74,7 +74,7 @@ export const DemoPage = () => {
 
         {/* Video Placeholder */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="relative bg-retro-dark rounded-xl p-8 shadow-retro-lg">
+          <div className="relative bg-retro-inverse rounded-xl p-8 shadow-retro-lg">
             {/* Video player placeholder */}
             <div className="aspect-video bg-retro-dark/50 rounded-lg flex items-center justify-center mb-6">
               <div className="text-center">
