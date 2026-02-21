@@ -203,6 +203,29 @@
     box-shadow: var(--shadow-retro);
   }
 
+  /* ===== FORCE DARK TEXT ON WARM/YELLOW BACKGROUNDS =====
+     In dark mode --retro-dark becomes near-white, which makes text
+     on yellow/mustard/orange backgrounds unreadable. These rules
+     lock the text back to the original dark value on those surfaces. */
+  .dark .bg-retro-mustard,
+  .dark .bg-retro-yellow,
+  .dark .bg-retro-amber,
+  .dark .bg-retro-orange,
+  .dark .bg-retro-orange-light,
+  .dark .bg-retro-mustard *,
+  .dark .bg-retro-yellow *,
+  .dark .bg-retro-amber *,
+  .dark .bg-retro-orange *,
+  .dark .bg-retro-orange-light * {
+    color: hsl(20 30% 8%) !important;   /* original --retro-dark value */
+  }
+
+  /* Preserve red text (e.g. icons that should stay their accent color) */
+  .dark .bg-retro-mustard .text-retro-red,
+  .dark .bg-retro-orange .text-retro-red {
+    color: hsl(var(--retro-red)) !important;
+  }
+
   /* ===== READABLE MUTED TEXT =====
      Use instead of text-retro-dark-mid on pages where the background
      flips in dark mode. Works because it uses explicit color values
