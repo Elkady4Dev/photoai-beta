@@ -209,71 +209,69 @@ export const Navigation = ({
               <Globe className="w-5 h-5 text-retro-dark" />
             </button>
             
-            {/* Profile Dropdown - Only on non-landing pages */}
-            {!isLandingPage && (
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="hidden md:flex w-10 h-10 bg-retro-dark border-[3px] border-retro-dark rounded-lg items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
-                >
-                  <User className="w-5 h-5 text-retro-cream" />
-                </button>
-                
-                {/* Dropdown Menu */}
-                {isProfileOpen && (
-                  <div className={`absolute ${isRTL ? 'left-0' : 'right-0'} top-12 w-48 bg-retro-cream border-[3px] border-retro-dark rounded-lg shadow-retro-lg z-50`}>
-                    <div className="py-2">
-                      {user ? (
-                        // Logged-in: show profile + sign out
-                        <>
-                          <button
-                            onClick={() => {
-                              navigate('/profile');
-                              setIsProfileOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-dark hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
-                          >
-                            <Package className="w-4 h-4" />
-                            <span className="font-medium">{t('nav.myProfile')}</span>
-                          </button>
-                          <button
-                            onClick={handleSignOut}
-                            className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-red hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
-                          >
-                            <LogOut className="w-4 h-4" />
-                            <span className="font-medium">{t('nav.signOut')}</span>
-                          </button>
-                        </>
-                      ) : (
-                        // Logged-out: show sign up + sign in
-                        <>
-                          <button
-                            onClick={() => {
-                              navigate('/signup');
-                              setIsProfileOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-dark hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
-                          >
-                            <LogIn className="w-4 h-4" />
-                            <span className="font-medium">{t('nav.signUp')}</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              navigate('/signin');
-                              setIsProfileOpen(false);
-                            }}
-                            className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-dark hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
-                          >
-                            <UserCircle className="w-4 h-4" />
-                            <span className="font-medium">{t('nav.signIn')}</span>
-                          </button>
-                        </>
-                      )}
-                    </div>
+            {/* Profile Dropdown - Always visible */}
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="w-10 h-10 bg-retro-dark border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+              >
+                <User className="w-5 h-5 text-retro-cream" />
+              </button>
+              
+              {/* Dropdown Menu */}
+              {isProfileOpen && (
+                <div className={`absolute ${isRTL ? 'left-0' : 'right-0'} top-12 w-48 bg-retro-cream border-[3px] border-retro-dark rounded-lg shadow-retro-lg z-50`}>
+                  <div className="py-2">
+                    {user ? (
+                      // Logged-in: show profile + sign out
+                      <>
+                        <button
+                          onClick={() => {
+                            navigate('/profile');
+                            setIsProfileOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-dark hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
+                        >
+                          <Package className="w-4 h-4" />
+                          <span className="font-medium">{t('nav.myProfile')}</span>
+                        </button>
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-red hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span className="font-medium">{t('nav.signOut')}</span>
+                        </button>
+                      </>
+                    ) : (
+                      // Logged-out: show sign up + sign in
+                      <>
+                        <button
+                          onClick={() => {
+                            navigate('/signup');
+                            setIsProfileOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-dark hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
+                        >
+                          <LogIn className="w-4 h-4" />
+                          <span className="font-medium">{t('nav.signUp')}</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigate('/signin');
+                            setIsProfileOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-3 text-retro-dark hover:bg-retro-dark hover:text-retro-cream transition-colors duration-150 flex items-center gap-3"
+                        >
+                          <UserCircle className="w-4 h-4" />
+                          <span className="font-medium">{t('nav.signIn')}</span>
+                        </button>
+                      </>
+                    )}
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
