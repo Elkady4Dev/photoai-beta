@@ -11,7 +11,6 @@ export interface AppState {
   selectedVariation: number | null;
   wantsPrint: boolean;
   deliveryAddress: string;
-  isDemoMode: boolean;
 }
 
 const Index = () => {
@@ -38,8 +37,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <LandingPage 
         onGetStarted={handleGetStarted} 
-        isDemoMode={state.isDemoMode}
-        toggleDemoMode={() => updateState({ isDemoMode: !state.isDemoMode })}
       />
     </div>
   );

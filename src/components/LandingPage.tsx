@@ -8,11 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 interface LandingPageProps {
   onGetStarted: () => void;
-  isDemoMode?: boolean;
-  toggleDemoMode?: () => void;
 }
 
-export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }: LandingPageProps) => {
+export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
   const { user, loading } = useAuth();
   const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
@@ -88,58 +86,65 @@ export const LandingPage = ({ onGetStarted, isDemoMode = false, toggleDemoMode }
 
               {/* Right — retro sticker collage */}
               <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] animate-slide-up-2">
-                {/* Mobile: Grid layout for better organization */}
-                <div className="sm:hidden absolute inset-0 grid grid-cols-2 gap-3 p-2">
-                  {/* Mobile: Your Photo - top left */}
-                  <div className="relative">
-                    <div className="sticker bg-retro-cream rounded-xl -rotate-2 overflow-hidden h-32">
-                      <img
-                        src="/images/yourphotoSection.jpeg"
-                        alt="Sample passport photo"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute -top-2 left-0 bg-retro-red text-retro-cream px-2 py-1 rounded border-[2px] border-retro-dark text-xs font-display z-10">
-                      Your Photo
-                    </div>
-                  </div>
+                {/* Mobile: Fun story layout */}
+                <div className="sm:hidden absolute inset-0 flex items-center justify-center p-4">
+                  <div className="flex items-center space-y-6 flex-col">
+                    {/* Top row: Before and After photos */}
+                    <div className="flex items-center justify-between w-full max-w-sm">
+                      {/* Before Photo - Left */}
+                      <div className="relative w-40">
+                        <div className="sticker bg-retro-cream rounded-2xl overflow-hidden shadow-retro-md border-[3px] border-retro-dark">
+                          <img
+                            src="/images/yourphotoSection.jpeg"
+                            alt="Before - Your photo"
+                            className="w-full h-40 object-contain"
+                          />
+                        </div>
+                        <div className="absolute -top-2 left-2 bg-retro-dark text-retro-cream px-2 py-1 rounded-full border-[2px] border-retro-dark text-xs font-display z-10 shadow-retro-sm">
+                          BEFORE
+                        </div>
+                      </div>
 
-                  {/* Mobile: 4x6 photo - top right */}
-                  <div className="relative">
-                    <div className="sticker bg-retro-cream rounded-xl rotate-2 overflow-hidden h-32">
-                      <img
-                        src="/images/4x6Section.jpeg"
-                        alt="4x6 passport photo example"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute -top-2 right-0 bg-retro-dark text-retro-cream px-2 py-1 rounded border-[2px] border-retro-dark text-xs font-display z-10">
-                      4x6
-                    </div>
-                  </div>
-
-                  {/* Mobile: Verified badge - bottom left */}
-                  <div className="relative">
-                    <div className="sticker bg-retro-cream rounded-xl rotate-1 overflow-hidden h-32">
-                      <div className="w-full h-full bg-retro-mustard/10 halftone-bg flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="w-8 h-8 bg-retro-mustard border-[2px] border-retro-dark rounded-lg mx-auto mb-2 flex items-center justify-center">
-                            <FileCheck className="w-4 h-4 text-retro-dark" />
+                      {/* Arrow - Middle */}
+                      <div className="flex flex-col items-center px-3">
+                        <div className="relative">
+                          <div className="w-12 h-12 bg-retro-mustard rounded-full flex items-center justify-center shadow-retro-md border-[3px] border-retro-dark animate-pulse">
+                            <svg className="w-6 h-6 text-retro-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
                           </div>
-                          <p className="font-display text-xs text-retro-dark tracking-wide">VERIFIED</p>
+                          <div className="absolute -inset-1 bg-retro-mustard/20 rounded-full animate-ping" />
+                        </div>
+                      </div>
+
+                      {/* After Photo - Right */}
+                      <div className="relative w-40">
+                        <div className="sticker bg-retro-cream rounded-2xl overflow-hidden shadow-retro-md border-[3px] border-retro-dark">
+                          <img
+                            src="/images/4x6Section.jpeg"
+                            alt="After - 4x6 print"
+                            className="w-full h-40 object-contain"
+                          />
+                        </div>
+                        <div className="absolute -top-2 right-2 bg-retro-red text-retro-cream px-2 py-1 rounded-full border-[2px] border-retro-dark text-xs font-display z-10 shadow-retro-sm">
+                          AFTER
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Mobile: Vinyl record - bottom right */}
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-20 h-20 bg-retro-dark border-[2px] border-retro-dark rounded-full flex items-center justify-center">
-                      <div className="w-14 h-14 border-[2px] border-retro-mustard rounded-full flex items-center justify-center">
-                        <div className="w-8 h-8 border-[2px] border-retro-mustard/50 rounded-full flex items-center justify-center">
-                          <div className="w-3 h-3 bg-retro-mustard rounded-full" />
+                    {/* Bottom: Verified Badge */}
+                    <div className="relative">
+                      <div className="sticker bg-gradient-to-br from-retro-teal/20 to-retro-cream rounded-2xl overflow-hidden shadow-retro-lg border-[3px] border-retro-dark px-6 py-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-retro-teal border-[2px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm">
+                            <FileCheck className="w-5 h-5 text-retro-cream" />
+                          </div>
+                          <p className="font-display text-sm text-retro-dark tracking-wide font-bold">VERIFIED QUALITY</p>
                         </div>
                       </div>
+                      {/* Decorative sparkles */}
+                      <div className="absolute -top-1 -left-1 w-3 h-3 bg-retro-mustard rounded-full animate-pulse" />
+                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-retro-red rounded-full animate-pulse" />
                     </div>
                   </div>
                 </div>

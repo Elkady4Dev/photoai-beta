@@ -24,7 +24,6 @@ export const PhotoCapturePage = () => {
         <PhotoCapture
           onPhotoCapture={handlePhotoCapture}
           onBack={handleBack}
-          isDemoMode={state.isDemoMode}
         />
       </div>
     </div>

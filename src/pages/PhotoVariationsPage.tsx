@@ -36,7 +36,6 @@ export const PhotoVariationsPage = () => {
           originalPhoto={state.capturedPhoto}
           onSelectVariation={handleSelectVariation}
           onBack={handleBack}
-          isDemoMode={state.isDemoMode}
         />
       </div>
     </div>

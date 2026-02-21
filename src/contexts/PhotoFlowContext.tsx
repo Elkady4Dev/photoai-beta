@@ -10,7 +10,6 @@ export interface PhotoFlowState {
   selectedVariationData: PhotoResult | null;
   wantsPrint: boolean;
   deliveryAddress: string;
-  isDemoMode: boolean;
 }
 
 interface PhotoFlowContextType {
@@ -28,18 +27,16 @@ const PERSISTABLE_KEYS: (keyof PhotoFlowState)[] = [
   'selectedVariation',
   'wantsPrint',
   'deliveryAddress',
-  'isDemoMode',
 ];
 
 const defaultState: PhotoFlowState = {
-  step: 0,
+  step: 1,
   capturedPhoto: null,
   documentType: null,
   selectedVariation: null,
   selectedVariationData: null,
   wantsPrint: false,
   deliveryAddress: '',
-  isDemoMode: false,
 };
 
 const PhotoFlowContext = createContext<PhotoFlowContextType | undefined>(undefined);
@@ -77,11 +74,8 @@ export const PhotoFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const resetState = useCallback(() => {
-    setState({
-      ...defaultState,
-      isDemoMode: state.isDemoMode, // Preserve demo mode
-    });
-  }, [state.isDemoMode]);
+    setState(defaultState);
+  }, []);
 
   return (
     <PhotoFlowContext.Provider value={{ state, updateState, resetState }}>

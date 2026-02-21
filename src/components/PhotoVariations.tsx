@@ -321,11 +321,10 @@ function ProgressIndicator({
 // --- Main Component ---
 
 interface PhotoVariationsProps {
-  documentType: DocumentType;
+  documentType: string;
   originalPhoto: string;
   onSelectVariation: (index: number, variationData?: PhotoResult) => void;
   onBack: () => void;
-  isDemoMode?: boolean;
 }
 
 export const PhotoVariations = ({
@@ -333,7 +332,6 @@ export const PhotoVariations = ({
   originalPhoto,
   onSelectVariation,
   onBack,
-  isDemoMode = false,
 }: PhotoVariationsProps) => {
   const {
     jobStatus,
@@ -378,44 +376,10 @@ export const PhotoVariations = ({
     id: 'Wallet Size Photo',
   };
 
-  // Demo mode - use sample images
-  const demoResults: PhotoResult[] = [
-    {
-      variationId: 1,
-      imageDataUrl: 'https://picsum.photos/300/400?random=photo1',
-      filename: 'demo-variation-1.jpg',
-      mimeType: 'image/jpeg',
-      photoType: documentType ? photoTypeMap[documentType] : 'Passport Photo',
-    },
-    {
-      variationId: 2,
-      imageDataUrl: 'https://picsum.photos/300/400?random=photo2',
-      filename: 'demo-variation-2.jpg',
-      mimeType: 'image/jpeg',
-      photoType: documentType ? photoTypeMap[documentType] : 'Passport Photo',
-    },
-    {
-      variationId: 3,
-      imageDataUrl: 'https://picsum.photos/300/400?random=photo3',
-      filename: 'demo-variation-3.jpg',
-      mimeType: 'image/jpeg',
-      photoType: documentType ? photoTypeMap[documentType] : 'Passport Photo',
-    },
-    {
-      variationId: 4,
-      imageDataUrl: 'https://picsum.photos/300/400?random=photo4',
-      filename: 'demo-variation-4.jpg',
-      mimeType: 'image/jpeg',
-      photoType: documentType ? photoTypeMap[documentType] : 'Passport Photo',
-    },
-  ];
-
   // Submit on mount
   useEffect(() => {
     if (hasSubmitted.current) return;
     hasSubmitted.current = true;
-
-    if (isDemoMode) return;
 
     // Guard: if documentType is missing, redirect rather than crash
     if (!documentType) {
@@ -461,41 +425,19 @@ export const PhotoVariations = ({
     }
   }, [error, completedCount, jobStatus, toast]);
 
-  // ✅ Safe label lookup — fallback to empty string if documentType is somehow undefined
-  const label = (documentType && documentLabels[documentType]) ?? '';
-
-  // ✅ Guard AFTER all hooks — if documentType is missing, render nothing and redirect
   if (!documentType) {
     window.location.href = `${import.meta.env.BASE_URL}photo-capture`;
     return null;
   }
 
-  const isComplete = isDemoMode || jobStatus === 'completed';
-  const isFatalError = !isDemoMode && ((jobStatus === 'failed' || jobStatus === 'timeout') && completedCount === 0);
+  const isComplete = jobStatus === 'completed';
+  const isFatalError = (jobStatus === 'failed' || jobStatus === 'timeout') && completedCount === 0;
   const showGrid = !isFatalError;
-  const displayCompletedCount = isDemoMode ? 4 : completedCount;
+  const displayCompletedCount = completedCount;
 
   return (
     <div className="min-h-screen bg-background">
 
-      {/* Demo Mode Indicator */}
-      {isDemoMode && (
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl p-4 shadow-lg mb-8 animate-pulse">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <Check className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="font-semibold">Demo Mode Active</h4>
-                  <p className="text-sm opacity-90">Using sample variations for testing</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -529,17 +471,15 @@ export const PhotoVariations = ({
 
               <p className="text-center text-muted-foreground mb-6">
                 {isComplete
-                  ? `Select the variation you prefer. All photos meet ${label} requirements.`
+                  ? `Select the variation you prefer. All photos meet ${documentLabels[documentType]} requirements.`
                   : displayCompletedCount > 0
                     ? 'Select a variation as they arrive. More on the way...'
-                    : `Our AI is generating ${label.toLowerCase()} photo variations...`}
+                    : `Our AI is generating ${documentLabels[documentType].toLowerCase()} photo variations...`}
               </p>
 
               <div className="grid grid-cols-2 gap-4 md:gap-6 mb-8">
                 {[1, 2, 3, 4].map(vid => {
-                  const result = isDemoMode
-                    ? demoResults.find(r => r.variationId === vid)
-                    : croppedResults.get(vid);
+                  const result = croppedResults.get(vid);
                   const aspect = ASPECT_CLASSES[documentType] || 'aspect-[3/4]';
                   return result ? (
                     <VariationCard

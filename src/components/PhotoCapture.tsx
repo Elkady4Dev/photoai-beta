@@ -1,12 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Camera, RotateCcw, Check, AlertCircle, Lightbulb, Focus, Upload, User } from "lucide-react";
+import { Camera, RotateCcw, Check, AlertCircle, Lightbulb, Focus, Upload, User, X, Sparkles, Zap, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner, LoadingOverlay } from "@/components/LoadingSpinner";
 
 interface PhotoCaptureProps {
-  onPhotoCapture: (photo: string) => void;
+  onPhotoCapture: (imageDataUrl: string) => void;
   onBack: () => void;
-  isDemoMode?: boolean;
 }
 
 interface ValidationState {
@@ -116,7 +115,7 @@ function analyseFrame(
   return { faceDetected, centered, goodFraming };
 }
 
-export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: PhotoCaptureProps) => {
+export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isCameraLoading, setIsCameraLoading] = useState(true);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -125,6 +124,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
     centered: false,
     goodFraming: false,
   });
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -203,38 +203,18 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
   }, [stopDetectionLoop]);
 
   useEffect(() => {
-    if (!isDemoMode && !capturedImage) {
+    if (!capturedImage) {
       startCamera();
     }
     return () => {
       stopCamera();
     };
-  }, [isDemoMode, capturedImage, startCamera, stopCamera]);
-
-  useEffect(() => {
-    if (isDemoMode) {
-      setValidation({ faceDetected: true, centered: true, goodFraming: true });
-      setIsCameraLoading(false);
-    }
-  }, [isDemoMode]);
-
-  useEffect(() => {
-    if (isDemoMode && !capturedImage) {
-      setCapturedImage('https://picsum.photos/400/600?random=portrait');
-    }
-  }, [isDemoMode, capturedImage]);
+  }, [capturedImage, startCamera, stopCamera]);
 
   // ---- Capture / Retake / Upload ----
   const capturePhoto = () => {
-    if (isDemoMode) {
-      setIsCapturing(true);
-      setTimeout(() => {
-        setIsCapturing(false);
-        onPhotoCapture(capturedImage!);
-      }, 500);
-      return;
-    }
-
+    setIsCapturing(true);
+    
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -255,17 +235,19 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
 
   const retakePhoto = () => {
     setCapturedImage(null);
-    if (!isDemoMode) {
-      startCamera();
-    }
+    startCamera();
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const img = new Image();
+    console.log('File selected:', file.name, file.type, file.size);
+
+    // Create image using document.createElement to avoid TypeScript issues
+    const img = document.createElement('img');
     img.onload = () => {
+      console.log('Image loaded:', img.width, 'x', img.height);
       const canvas = canvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -285,16 +267,39 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
       const compressed = canvas.toDataURL('image/jpeg', 0.9);
       setCapturedImage(compressed);
       stopCamera();
+      console.log('Image processed and set as captured image');
+    };
+    img.onerror = (error) => {
+      console.error('Error loading image:', error);
     };
     img.src = URL.createObjectURL(file);
   };
 
   const triggerFileUpload = () => {
-    fileInputRef.current?.click();
+    console.log('Triggering file upload...');
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    } else {
+      console.error('File input ref is null');
+    }
+  };
+
+  const openGallery = () => {
+    // Load images from localStorage or recent captures
+    const savedImages = localStorage.getItem('galleryImages');
+    if (savedImages) {
+      setGalleryImages(JSON.parse(savedImages));
+    }
+    // For now, just trigger file upload as gallery
+    triggerFileUpload();
   };
 
   const confirmPhoto = () => {
     if (capturedImage) {
+      // Save to gallery
+      const updatedGallery = [...galleryImages, capturedImage];
+      setGalleryImages(updatedGallery);
+      localStorage.setItem('galleryImages', JSON.stringify(updatedGallery));
       onPhotoCapture(capturedImage);
     }
   };
@@ -303,178 +308,227 @@ export const PhotoCapture = ({ onPhotoCapture, onBack, isDemoMode = false }: Pho
 
   const validationItems = [
     { key: "faceDetected", label: "Face detected", icon: User, valid: validation.faceDetected },
-    { key: "centered", label: "Face centered in frame", icon: Focus, valid: validation.centered },
-    { key: "goodFraming", label: "Good framing & size", icon: Lightbulb, valid: validation.goodFraming },
+    { key: "centered", label: "Face centered", icon: Focus, valid: validation.centered },
+    { key: "goodFraming", label: "Good framing", icon: Lightbulb, valid: validation.goodFraming },
   ];
 
   // Frame turns green when all conditions are met
-  const frameColor = allValid ? "border-green-500" : "border-accent";
-  const frameHint = allValid ? "Ready to capture!" : "Align your face inside the oval";
+  const frameColor = allValid ? "border-retro-teal" : "border-retro-dark/50";
+  const frameHint = allValid ? "Perfect! 📸" : "Center your face";
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Camera/Preview Area */}
-      <div className="relative bg-card rounded-3xl overflow-hidden shadow-card-lg mb-8">
-        <div className="aspect-[3/4] relative">
+    <div className="min-h-screen bg-retro-cream/50 grain-overlay relative">
+      {/* Full Screen Camera View */}
+      <div className="fixed inset-0 bg-black">
+        <div className="relative h-full w-full">
           {!capturedImage ? (
             <>
+              {/* Camera Feed */}
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-full object-cover"
+                style={{ transform: 'scaleX(-1)' }}
+              />
+              
+              {/* Loading Overlay */}
               {isCameraLoading && (
-                <div className="absolute inset-0 bg-card/95 flex items-center justify-center z-10">
-                  <LoadingSpinner size="md" text="Initializing Camera..." />
+                <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-20">
+                  <div className="text-center">
+                    <LoadingSpinner size="lg" text="Starting Camera..." />
+                  </div>
                 </div>
               )}
-              {!isDemoMode && (
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full h-full object-cover"
-                  style={{ transform: 'scaleX(-1)' }}
-                />
-              )}
-              {/* Face guide overlay */}
-              {!isCameraLoading && !isDemoMode && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className={`w-48 h-60 border-4 rounded-full transition-colors duration-300 ${frameColor}`}>
-                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-sm font-medium text-card-foreground bg-card/90 px-3 py-1 rounded-full whitespace-nowrap">
-                      {frameHint}
+
+              {/* Face Guide Overlay */}
+              {!isCameraLoading && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                  <div className={`relative`}>
+                    {/* Retro Oval Frame */}
+                    <div className={`w-64 h-80 border-[6px] ${frameColor} rounded-full transition-all duration-300 shadow-retro-lg`}>
+                      {/* Corner decorations */}
+                      <div className="absolute -top-4 -left-4 w-8 h-8 bg-retro-red border-[3px] border-retro-dark rounded-lg shadow-retro-sm" />
+                      <div className="absolute -top-4 -right-4 w-8 h-8 bg-retro-mustard border-[3px] border-retro-dark rounded-lg shadow-retro-sm" />
+                      <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-retro-teal border-[3px] border-retro-dark rounded-lg shadow-retro-sm" />
+                      <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-retro-red border-[3px] border-retro-dark rounded-lg shadow-retro-sm" />
+                    </div>
+                    
+                    {/* Status Badge */}
+                    <div className={`absolute -bottom-12 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full border-[3px] transition-all duration-300 ${
+                      allValid 
+                        ? "bg-retro-teal border-retro-teal text-retro-cream shadow-retro-sm" 
+                        : "bg-retro-cream border-retro-dark text-retro-dark shadow-retro-sm"
+                    }`}>
+                      <span className="font-display text-sm font-bold tracking-wider">
+                        {frameHint}
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
+
+              {/* Top Controls */}
+              <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-30">
+                {/* Back Button */}
+                <button
+                  onClick={onBack}
+                  className="w-12 h-12 bg-retro-cream/90 backdrop-blur-sm border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+                >
+                  <X className="w-6 h-6 text-retro-dark" />
+                </button>
+
+                {/* Validation Status */}
+                <div className="flex gap-2">
+                  {validationItems.map((item, index) => (
+                    <div
+                      key={item.key}
+                      className={`w-10 h-10 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
+                        item.valid
+                          ? "bg-retro-teal border-retro-teal shadow-retro-sm"
+                          : "bg-retro-cream/50 border-retro-dark/50"
+                      }`}
+                    >
+                      {item.valid ? (
+                        <Check className="w-5 h-5 text-retro-cream" />
+                      ) : (
+                        <item.icon className="w-5 h-5 text-retro-dark" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Upload Button */}
+                <button
+                  onClick={triggerFileUpload}
+                  className="w-12 h-12 bg-retro-mustard/90 backdrop-blur-sm border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+                >
+                  <Upload className="w-6 h-6 text-retro-dark" />
+                </button>
+              </div>
+
+              {/* Bottom Controls */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 z-30">
+                <div className="flex items-center justify-center gap-8">
+                  {/* Gallery Button */}
+                  <button
+                    onClick={openGallery}
+                    className="w-14 h-14 bg-retro-cream/90 backdrop-blur-sm border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150 relative"
+                  >
+                    <Image className="w-6 h-6 text-retro-dark" />
+                    {galleryImages.length > 0 && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-retro-red border-[2px] border-retro-cream rounded-full flex items-center justify-center">
+                        <span className="text-xs font-bold text-retro-cream">{galleryImages.length}</span>
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Capture Button - Centered */}
+                  <div className="flex-1 flex justify-center">
+                    <button
+                      onClick={capturePhoto}
+                      disabled={isCapturing || !allValid}
+                      className={`relative w-24 h-24 rounded-full border-[6px] transition-all duration-300 flex items-center justify-center ${
+                        allValid && !isCapturing
+                          ? "bg-retro-red border-retro-red shadow-retro-lg hover:shadow-retro-hover hover:translate-x-[2px] hover:translate-y-[2px] animate-pulse"
+                          : "bg-retro-dark/50 border-retro-dark/50"
+                      }`}
+                    >
+                      {isCapturing ? (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-8 h-8 bg-retro-cream rounded-full animate-ping" />
+                        </div>
+                      ) : (
+                        <Camera className={`w-10 h-10 ${allValid ? "text-retro-cream" : "text-retro-dark/50"}`} />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Empty space for balance */}
+                  <div className="w-14 h-14" />
+                </div>
+
+                {/* Fun Tips */}
+                <div className="mt-6 text-center">
+                  <div className="inline-flex items-center gap-2 bg-retro-cream/90 backdrop-blur-sm border-[3px] border-retro-dark rounded-lg px-4 py-2 shadow-retro-sm">
+                    <Sparkles className="w-4 h-4 text-retro-dark" />
+                    <span className="font-display text-sm text-retro-dark tracking-wider">
+                      {allValid ? "Looking great! 📸" : "Move closer to the guide"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </>
           ) : (
-            <img
-              src={capturedImage}
-              alt="Captured photo"
-              className="w-full h-full object-cover"
-            />
+            <>
+              {/* Captured Image Preview */}
+              <img
+                src={capturedImage}
+                alt="Captured photo"
+                className="w-full h-full object-cover"
+              />
+
+              {/* Top Controls for Preview */}
+              <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-30">
+                <button
+                  onClick={retakePhoto}
+                  className="w-12 h-12 bg-retro-cream/90 backdrop-blur-sm border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+                >
+                  <RotateCcw className="w-6 h-6 text-retro-dark" />
+                </button>
+
+                <div className="sticker bg-retro-teal border-[3px] border-retro-teal rounded-lg px-4 py-2 shadow-retro-sm">
+                  <span className="font-display text-sm text-retro-cream font-bold tracking-wider">
+                    Photo Captured!
+                  </span>
+                </div>
+
+                <button
+                  onClick={confirmPhoto}
+                  className="w-12 h-12 bg-retro-red/90 backdrop-blur-sm border-[3px] border-retro-red rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+                >
+                  <Check className="w-6 h-6 text-retro-cream" />
+                </button>
+              </div>
+
+              {/* Bottom Controls for Preview */}
+              <div className="absolute bottom-0 left-4 right-4 p-4 z-30">
+                <div className="flex gap-3 max-w-xs mx-auto">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 border-[3px] border-retro-dark bg-retro-cream/90 backdrop-blur-sm hover:bg-retro-dark hover:text-retro-cream"
+                    onClick={retakePhoto}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-1" />
+                    Retake
+                  </Button>
+                  <Button
+                    variant="hero"
+                    size="lg"
+                    className="flex-1"
+                    onClick={confirmPhoto}
+                  >
+                    <Check className="w-4 h-4 mr-1" />
+                    Use This
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
         </div>
-        <canvas ref={canvasRef} className="hidden" />
       </div>
 
-      {/* Demo Mode Indicator */}
-      {isDemoMode && (
-        <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl p-4 shadow-lg mb-8 animate-pulse">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <Camera className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="font-semibold">Demo Mode Active</h4>
-              <p className="text-sm opacity-90">Using sample data for testing</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Validation Status */}
-      {!capturedImage && (
-        <div className="bg-card rounded-2xl p-6 shadow-card mb-8 animate-fade-in">
-          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-secondary" />
-            Photo Requirements
-          </h3>
-          <div className="space-y-3">
-            {validationItems.map((item) => (
-              <div
-                key={item.key}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${
-                  item.valid ? "bg-green-500/10" : "bg-accent/10"
-                }`}
-              >
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    item.valid ? "bg-green-500/20 text-green-600" : "bg-accent/20 text-accent"
-                  }`}
-                >
-                  {item.valid ? (
-                    <Check className="w-4 h-4" />
-                  ) : (
-                    <item.icon className="w-4 h-4" />
-                  )}
-                </div>
-                <span className={`font-medium ${item.valid ? "text-foreground" : "text-muted-foreground"}`}>
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Action Buttons */}
-      <div className="flex flex-col gap-4">
-        {!capturedImage ? (
-          <>
-            <div className="flex gap-4">
-              <Button
-                variant="hero"
-                size="xl"
-                className="flex-1"
-                onClick={capturePhoto}
-                disabled={isCapturing || !allValid}
-              >
-                {isCapturing ? (
-                  <>
-                    <LoadingSpinner size="sm" className="mr-2" />
-                    Capturing...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="w-5 h-5 mr-2" />
-                    Take Photo
-                  </>
-                )}
-              </Button>
-            </div>
-            <div className="relative flex items-center">
-              <div className="flex-1 border-t border-border"></div>
-              <span className="px-4 text-sm text-muted-foreground">or</span>
-              <div className="flex-1 border-t border-border"></div>
-            </div>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full"
-              onClick={triggerFileUpload}
-            >
-              <Upload className="w-5 h-5 mr-2" />
-              Upload Photo
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </>
-        ) : (
-          <div className="flex gap-4">
-            <Button
-              variant="outline"
-              size="lg"
-              className="flex-1"
-              onClick={retakePhoto}
-            >
-              <RotateCcw className="w-5 h-5 mr-2" />
-              Retake
-            </Button>
-            <Button
-              variant="hero"
-              size="lg"
-              className="flex-1"
-              onClick={confirmPhoto}
-            >
-              <Check className="w-5 h-5 mr-2" />
-              Use This Photo
-            </Button>
-          </div>
-        )}
-      </div>
+      {/* Hidden Elements */}
+      <canvas ref={canvasRef} className="hidden" />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        className="hidden"
+      />
     </div>
   );
 };
