@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Menu, X, User, ChevronDown, LogIn, UserCircle, Package, Aperture, LogOut, Globe } from "lucide-react";
+import { ArrowLeft, Menu, X, User, ChevronDown, LogIn, UserCircle, Package, Aperture, LogOut, Globe, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface NavigationProps {
   currentStep?: number;
@@ -27,6 +28,7 @@ export const Navigation = ({
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { language, setLanguage, t, isRTL } = useLanguage();
+  const { isDark, toggleTheme } = useTheme();
 
   const navItems = [
     { name: t('nav.home'), href: "#home", id: "home" },
@@ -200,6 +202,18 @@ export const Navigation = ({
               {isMobileMenuOpen ? <X className="w-5 h-5 text-retro-cream" /> : <Menu className="w-5 h-5 text-retro-cream" />}
             </button>
             
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="w-10 h-10 bg-retro-dark border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark
+                ? <Sun className="w-5 h-5 text-retro-cream" />
+                : <Moon className="w-5 h-5 text-retro-cream" />
+              }
+            </button>
+
             {/* Language Toggle */}
             <button
               onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}

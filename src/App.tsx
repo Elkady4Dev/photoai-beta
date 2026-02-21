@@ -19,7 +19,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { handleNetworkError } from "@/utils/errorReporting";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { LanguageProvider } from "@/contexts/LanguageContext"; 
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { DemoPage } from "./components/DemoPage";
 import { TokenPreserver } from "./components/TokenPreserver";
 import { PhotoFlowProvider } from "@/contexts/PhotoFlowContext";
@@ -43,6 +44,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       {/* --- WRAP EVERYTHING IN LANGUAGEPROVIDER --- */}
+      <ThemeProvider>
       <LanguageProvider>
         <Toaster />
         <Sonner />
@@ -120,6 +122,7 @@ const App = () => (
           </BrowserRouter>
         </ErrorBoundary>
       </LanguageProvider>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
