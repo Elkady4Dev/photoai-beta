@@ -1,0 +1,508 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ===== MODERN RETRO PALETTE ===== */
+    --retro-red: 0 72% 45%;
+    --retro-red-light: 0 65% 52%;
+    --retro-orange: 25 90% 50%;
+    --retro-orange-light: 28 85% 58%;
+    --retro-amber: 40 90% 50%;
+    --retro-teal: 168 50% 38%;
+    --retro-pink: 345 55% 55%;
+    --retro-yellow: 45 95% 58%;
+    --retro-mustard: 42 80% 48%;
+    --retro-olive: 75 30% 40%;
+    --retro-burgundy: 350 60% 30%;
+    --retro-brown: 20 40% 30%;
+
+    /* Warm vintage backgrounds */
+    --retro-peach: 35 50% 90%;
+    --retro-peach-dark: 30 35% 82%;
+    --retro-cream: 40 45% 94%;
+    --retro-paper: 38 40% 92%;
+
+    /* Dark text */
+    --retro-dark: 20 30% 8%;
+    --retro-dark-mid: 20 12% 35%;
+    --retro-dark-light: 20 8% 55%;
+
+    /* ===== SEMANTIC TOKENS ===== */
+    --background: 38 40% 92%;
+    --foreground: 20 30% 8%;
+
+    --card: 40 30% 96%;
+    --card-foreground: 20 30% 8%;
+
+    --popover: 40 30% 96%;
+    --popover-foreground: 20 30% 8%;
+
+    --primary: 0 72% 45%;
+    --primary-foreground: 40 45% 94%;
+
+    --secondary: 25 90% 50%;
+    --secondary-foreground: 20 30% 8%;
+
+    --muted: 30 35% 82%;
+    --muted-foreground: 20 12% 35%;
+
+    --accent: 168 50% 38%;
+    --accent-foreground: 40 45% 94%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 25 25% 75%;
+    --input: 30 25% 85%;
+    --ring: 0 72% 45%;
+
+    --radius: 0.5rem;
+
+    /* Hard retro shadows */
+    --shadow-retro: 4px 4px 0px hsl(20 30% 8%);
+    --shadow-retro-sm: 3px 3px 0px hsl(20 30% 8%);
+    --shadow-retro-lg: 6px 6px 0px hsl(20 30% 8%);
+    --shadow-retro-red: 4px 4px 0px hsl(0 72% 45%);
+    --shadow-retro-hover: 2px 2px 0px hsl(20 30% 8%);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 20 18% 10%;
+    --foreground: 25 60% 92%;
+    --card: 20 15% 14%;
+    --card-foreground: 25 60% 92%;
+    --popover: 20 15% 14%;
+    --popover-foreground: 25 60% 92%;
+    --primary: 0 70% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 25 80% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 20 12% 18%;
+    --muted-foreground: 20 8% 55%;
+    --accent: 168 45% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 20 12% 22%;
+    --input: 20 12% 22%;
+    --ring: 0 70% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bebas Neue', 'DM Serif Display', serif;
+    letter-spacing: 0.02em;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.04em;
+  }
+
+  .font-display-serif {
+    font-family: 'DM Serif Display', serif;
+  }
+
+  .font-body {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+  }
+
+  /* ===== RETRO HARD SHADOWS ===== */
+  .shadow-retro {
+    box-shadow: var(--shadow-retro);
+  }
+
+  .shadow-retro-sm {
+    box-shadow: var(--shadow-retro-sm);
+  }
+
+  .shadow-retro-lg {
+    box-shadow: var(--shadow-retro-lg);
+  }
+
+  .shadow-retro-red {
+    box-shadow: var(--shadow-retro-red);
+  }
+
+  .shadow-retro-hover {
+    box-shadow: var(--shadow-retro-hover);
+  }
+
+  /* Legacy soft shadows */
+  .shadow-card {
+    box-shadow: var(--shadow-retro-sm);
+  }
+
+  .shadow-card-lg {
+    box-shadow: var(--shadow-retro);
+  }
+
+  /* ===== GRAIN TEXTURE OVERLAY ===== */
+  .grain-overlay::after {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* ===== HALFTONE DOT PATTERN ===== */
+  .halftone-bg {
+    background-image: radial-gradient(circle, hsl(20 30% 8% / 0.07) 1px, transparent 1px);
+    background-size: 12px 12px;
+  }
+
+  /* ===== RETRO STRIPE PATTERN ===== */
+  .stripe-bg {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      hsl(20 30% 8% / 0.03) 8px,
+      hsl(20 30% 8% / 0.03) 16px
+    );
+  }
+
+  /* ===== VINTAGE STAMP BORDER ===== */
+  .stamp-border {
+    background:
+      linear-gradient(90deg, hsl(var(--retro-dark)) 50%, transparent 50%) repeat-x,
+      linear-gradient(90deg, hsl(var(--retro-dark)) 50%, transparent 50%) repeat-x,
+      linear-gradient(0deg, hsl(var(--retro-dark)) 50%, transparent 50%) repeat-y,
+      linear-gradient(0deg, hsl(var(--retro-dark)) 50%, transparent 50%) repeat-y;
+    background-size: 12px 3px, 12px 3px, 3px 12px, 3px 12px;
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+    padding: 8px;
+  }
+
+  /* ===== STICKER EFFECT ===== */
+  .sticker {
+    border: 3px solid hsl(var(--retro-dark));
+    box-shadow: var(--shadow-retro);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .sticker:hover {
+    box-shadow: var(--shadow-retro-hover);
+    transform: translate(2px, 2px);
+  }
+
+  /* ===== RETRO TAPE EFFECT ===== */
+  .tape::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 60px;
+    height: 20px;
+    background: hsl(45 80% 75% / 0.7);
+    border: 1px solid hsl(20 30% 8% / 0.15);
+    z-index: 10;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out both;
+  }
+
+  .animate-slide-up-1 {
+    animation: slide-up 0.6s ease-out 0.1s both;
+  }
+
+  .animate-slide-up-2 {
+    animation: slide-up 0.6s ease-out 0.2s both;
+  }
+
+  .animate-slide-up-3 {
+    animation: slide-up 0.6s ease-out 0.3s both;
+  }
+
+  .animate-slide-up-4 {
+    animation: slide-up 0.6s ease-out 0.4s both;
+  }
+
+  /* Marquee ticker */
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse 20s linear infinite;
+  }
+
+  /* Retro wiggle */
+  .animate-wiggle {
+    animation: wiggle 0.5s ease-in-out;
+  }
+
+  /* Retro blink */
+  .animate-retro-pulse {
+    animation: retro-pulse 2s ease-in-out infinite;
+  }
+
+  /* Text carousel animations */
+  .animate-text-carousel {
+    animation: text-carousel 10s ease-in-out infinite;
+  }
+
+  /* Individual float animations for emoji circles */
+  .animate-float-1 {
+    animation: float-1 4s ease-in-out infinite;
+  }
+
+  .animate-float-2 {
+    animation: float-2 4s ease-in-out infinite;
+  }
+
+  .animate-float-3 {
+    animation: float-3 4s ease-in-out infinite;
+  }
+
+  .animate-float-4 {
+    animation: float-4 4s ease-in-out infinite;
+  }
+
+  /* Number counting animation */
+  .animate-number {
+    animation: number-count 2s ease-out;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes retro-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes text-carousel {
+  0%, 20% { transform: translateX(0); }
+  25%, 45% { transform: translateX(-100%); }
+  50%, 70% { transform: translateX(-200%); }
+  75%, 95% { transform: translateX(-300%); }
+  100% { transform: translateX(-400%); }
+}
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-3deg); }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(7deg); }
+}
+
+@keyframes float-4 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(-5deg); }
+}
+
+@keyframes number-count {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* ===== RTL SUPPORT ===== */
+.rtl {
+  direction: rtl;
+}
+
+.rtl .font-display {
+  font-family: 'Bebas Neue', 'Noto Kufi Arabic', sans-serif;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  transform: skew(0deg, 0deg); /* Fix slanted text in RTL */
+}
+
+/* RTL Layout Adjustments */
+.rtl .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+.rtl .text-right {
+  text-align: left;
+}
+
+.rtl .text-left {
+  text-align: right;
+}
+
+.rtl .ml-1 { margin-left: 0; margin-right: 0.25rem; }
+.rtl .ml-2 { margin-left: 0; margin-right: 0.5rem; }
+.rtl .ml-3 { margin-left: 0; margin-right: 0.75rem; }
+.rtl .ml-4 { margin-left: 0; margin-right: 1rem; }
+.rtl .ml-5 { margin-left: 0; margin-right: 1.25rem; }
+.rtl .ml-6 { margin-left: 0; margin-right: 1.5rem; }
+.rtl .ml-8 { margin-left: 0; margin-right: 2rem; }
+
+.rtl .mr-1 { margin-right: 0; margin-left: 0.25rem; }
+.rtl .mr-2 { margin-right: 0; margin-left: 0.5rem; }
+.rtl .mr-3 { margin-right: 0; margin-left: 0.75rem; }
+.rtl .mr-4 { margin-right: 0; margin-left: 1rem; }
+.rtl .mr-5 { margin-right: 0; margin-left: 1.25rem; }
+.rtl .mr-6 { margin-right: 0; margin-left: 1.5rem; }
+.rtl .mr-8 { margin-right: 0; margin-left: 2rem; }
+
+.rtl .pl-1 { padding-left: 0; padding-right: 0.25rem; }
+.rtl .pl-2 { padding-left: 0; padding-right: 0.5rem; }
+.rtl .pl-3 { padding-left: 0; padding-right: 0.75rem; }
+.rtl .pl-4 { padding-left: 0; padding-right: 1rem; }
+.rtl .pl-6 { padding-left: 0; padding-right: 1.5rem; }
+.rtl .pl-8 { padding-left: 0; padding-right: 2rem; }
+
+.rtl .pr-1 { padding-right: 0; padding-left: 0.25rem; }
+.rtl .pr-2 { padding-right: 0; padding-left: 0.5rem; }
+.rtl .pr-3 { padding-right: 0; padding-left: 0.75rem; }
+.rtl .pr-4 { padding-right: 0; padding-left: 1rem; }
+.rtl .pr-6 { padding-right: 0; padding-left: 1.5rem; }
+.rtl .pr-8 { padding-right: 0; padding-left: 2rem; }
+
+/* RTL Team Grid Fix */
+.rtl-team-grid {
+  direction: ltr;
+}
+
+.rtl-team-grid > div {
+  direction: rtl;
+}
+
+/* Mobile (2 cols) */
+.rtl-team-grid > div:nth-child(1) { order: 2; }
+.rtl-team-grid > div:nth-child(2) { order: 1; }
+
+/* Tablet (3 cols) */
+@media (min-width: 768px) {
+  .rtl-team-grid > div:nth-child(1) { order: 3; }
+  .rtl-team-grid > div:nth-child(2) { order: 2; }
+  .rtl-team-grid > div:nth-child(3) { order: 1; }
+}
+
+/* Desktop (6 cols) */
+@media (min-width: 1024px) {
+  .rtl-team-grid > div:nth-child(1) { order: 6; }
+  .rtl-team-grid > div:nth-child(2) { order: 5; }
+  .rtl-team-grid > div:nth-child(3) { order: 4; }
+  .rtl-team-grid > div:nth-child(4) { order: 3; }
+  .rtl-team-grid > div:nth-child(5) { order: 2; }
+  .rtl-team-grid > div:nth-child(6) { order: 1; }
+}
+
+/* RTL Grid and Flexbox - Removed conflicting grid-column styles for team grid */
+
+/* RTL Animations */
+.rtl .animate-slide-up {
+  animation: slide-up-rtl 0.6s ease-out both;
+}
+
+@keyframes slide-up-rtl {
+  from {
+    opacity: 0;
+    transform: translateY(24px) translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+}
+
+/* RTL Specific Components */
+.rtl .sticker {
+  transform: rotate(-1deg);
+}
+
+.rtl .sticker:hover {
+  transform: rotate(1deg) translate(-2px, 2px);
+}

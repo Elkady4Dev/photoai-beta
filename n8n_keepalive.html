@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N8N Server Keepalive</title>
+</head>
+<body>
+    <h1>Server Keepalive Running...</h1>
+    <p>Last ping: <span id="lastPing">-</span></p>
+    <p>Status: <span id="status">Waiting...</span></p>
+
+    <script>
+        const SERVER_URL = 'https://photoai-n8n.onrender.com/';
+        const PING_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        async function pingServer() {
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('status').textContent = 'Pinging...';
+            
+            try {
+                const response = await fetch(SERVER_URL, {
+                    method: 'POST',
+                    mode: 'no-cors'
+                });
+                
+                document.getElementById('lastPing').textContent = now;
+                document.getElementById('status').textContent = 'Success';
+                console.log('Ping successful at', now);
+            } catch (error) {
+                document.getElementById('lastPing').textContent = now;
+                document.getElementById('status').textContent = 'Failed';
+                console.error('Ping failed:', error);
+            }
+        }
+
+        // Ping immediately on load
+        pingServer();
+        
+        // Then ping every 5 minutes
+        setInterval(pingServer, PING_INTERVAL);
+    </script>
+</body>
+</html>
