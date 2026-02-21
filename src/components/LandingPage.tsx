@@ -63,7 +63,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                   </span>
                 </h1>
 
-                <p className="text-retro-dark-mid text-sm sm:text-base mb-8 max-w-md leading-relaxed font-medium">
+                <p className="text-foreground/70 text-sm sm:text-base mb-8 max-w-md leading-relaxed font-medium">
                   {t('hero.description')}
                 </p>
 
