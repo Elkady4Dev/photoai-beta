@@ -422,16 +422,21 @@ function ImagePreviewModal({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <img
-          src={result.imageDataUrl}
-          alt={`Variation ${result.variationId} preview`}
-          className="max-w-[85vw] max-h-[80vh] object-contain rounded-lg shadow-2xl select-none"
+        <div
+          className="relative rounded-lg shadow-2xl overflow-hidden"
           style={{
             transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
             transition: isDragging ? 'none' : 'transform 150ms ease-out',
           }}
-          draggable={false}
-        />
+        >
+          <img
+            src={result.imageDataUrl}
+            alt={`Variation ${result.variationId} preview`}
+            className="max-w-[85vw] max-h-[80vh] object-contain select-none"
+            draggable={false}
+          />
+          <WatermarkOverlay />
+        </div>
       </div>
     </div>
   );
