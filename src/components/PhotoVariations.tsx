@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Check, Loader2, AlertCircle, Download, ShieldCheck, ShieldAlert, ShieldQuestion, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, Loader2, AlertCircle, Download, ShieldCheck, ShieldAlert, ShieldQuestion, ChevronDown, ChevronUp, X, ZoomIn } from "lucide-react";
+import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -292,6 +293,150 @@ function VariationCard({
   );
 }
 
+function ImagePreviewModal({
+  result,
+  onClose,
+}: {
+  result: PhotoResult;
+  onClose: () => void;
+}) {
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const positionStart = useRef({ x: 0, y: 0 });
+  const lastTouchDistance = useRef<number | null>(null);
+
+  // Close on Escape
+  const handleClose = useCallback(() => onClose(), [onClose]);
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [handleClose]);
+
+  // Prevent body scroll while modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  // Mouse wheel zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    setScale(prev => {
+      const next = Math.min(Math.max(prev + delta, 1), 4);
+      if (next <= 1) setPosition({ x: 0, y: 0 });
+      return next;
+    });
+  };
+
+  // Touch pinch zoom
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.stopPropagation();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (lastTouchDistance.current !== null) {
+        const delta = (distance - lastTouchDistance.current) * 0.005;
+        setScale(prev => {
+          const next = Math.min(Math.max(prev + delta, 1), 4);
+          if (next <= 1) setPosition({ x: 0, y: 0 });
+          return next;
+        });
+      }
+      lastTouchDistance.current = distance;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    lastTouchDistance.current = null;
+  };
+
+  // Mouse drag for panning when zoomed
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (scale > 1) {
+      e.preventDefault();
+      setIsDragging(true);
+      dragStart.current = { x: e.clientX, y: e.clientY };
+      positionStart.current = { ...position };
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && scale > 1) {
+      setPosition({
+        x: positionStart.current.x + (e.clientX - dragStart.current.x),
+        y: positionStart.current.y + (e.clientY - dragStart.current.y),
+      });
+    }
+  };
+
+  const handleMouseUp = () => setIsDragging(false);
+
+  // Double-tap to toggle zoom
+  const handleDoubleClick = () => {
+    if (scale > 1) {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    } else {
+      setScale(2.5);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      onClick={handleClose}
+      style={{ animation: 'fadeIn 200ms ease-out' }}
+    >
+      {/* Close button */}
+      <button
+        onClick={handleClose}
+        className="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-colors"
+      >
+        <X className="w-5 h-5 text-white" />
+      </button>
+
+      {/* Zoom hint */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 text-white/60 text-xs flex items-center gap-1.5 pointer-events-none">
+        <ZoomIn className="w-3.5 h-3.5" />
+        {scale > 1 ? `${Math.round(scale * 100)}% — drag to pan` : 'Scroll or pinch to zoom'}
+      </div>
+
+      {/* Image container */}
+      <div
+        className={`relative max-w-[85vw] max-h-[80vh] ${scale > 1 ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'}`}
+        onClick={(e) => e.stopPropagation()}
+        onWheel={handleWheel}
+        onDoubleClick={handleDoubleClick}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <img
+          src={result.imageDataUrl}
+          alt={`Variation ${result.variationId} preview`}
+          className="max-w-[85vw] max-h-[80vh] object-contain rounded-lg shadow-2xl select-none"
+          style={{
+            transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+            transition: isDragging ? 'none' : 'transform 150ms ease-out',
+          }}
+          draggable={false}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ProgressIndicator({
   completedCount,
   total,
@@ -343,6 +488,7 @@ export const PhotoVariations = ({
   } = usePhotoJob({ totalVariations: 4, timeoutMs: 5 * 60 * 1000 });
 
   const [selectedVariationId, setSelectedVariationId] = useState<number | null>(null);
+  const [previewVariationId, setPreviewVariationId] = useState<number | null>(null);
   const [croppedResults, setCroppedResults] = useState<Map<number, PhotoResult>>(new Map());
   const [jobStartTime, setJobStartTime] = useState<number>(Date.now());
   const { toast } = useToast();
@@ -489,7 +635,7 @@ export const PhotoVariations = ({
                       aspectClass={aspect}
                       onSelect={() => {
                         setSelectedVariationId(vid);
-                        onSelectVariation(vid - 1, result);
+                        setPreviewVariationId(vid);
                       }}
                     />
                   ) : (
@@ -502,7 +648,11 @@ export const PhotoVariations = ({
                 variant="hero"
                 size="xl"
                 className="w-full"
-                onClick={() => selectedVariationId !== null && onSelectVariation(selectedVariationId - 1)}
+                onClick={() => {
+                  if (selectedVariationId !== null) {
+                    onSelectVariation(selectedVariationId - 1, croppedResults.get(selectedVariationId));
+                  }
+                }}
                 disabled={selectedVariationId === null}
               >
                 Continue with Selection
@@ -511,6 +661,14 @@ export const PhotoVariations = ({
           )}
         </div>
       </div>
+
+      {/* Image preview lightbox */}
+      {previewVariationId !== null && croppedResults.get(previewVariationId) && (
+        <ImagePreviewModal
+          result={croppedResults.get(previewVariationId)!}
+          onClose={() => setPreviewVariationId(null)}
+        />
+      )}
     </div>
   );
 };
