@@ -15,11 +15,11 @@ const STORAGE_KEY = 'theme';
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     try {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY);
       if (stored === 'dark' || stored === 'light') return stored;
     } catch {}
-    // Fall back to OS preference if nothing stored
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Default to light mode if user hasn't chosen yet
+    return 'light';
   });
 
   // Apply/remove the 'dark' class on <html> whenever theme changes
@@ -31,7 +31,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       root.classList.remove('dark');
     }
     try {
-      sessionStorage.setItem(STORAGE_KEY, theme);
+      localStorage.setItem(STORAGE_KEY, theme);
     } catch {}
   }, [theme]);
 
