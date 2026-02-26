@@ -141,16 +141,15 @@ export const Navigation = ({
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo as retro badge */}
-          <div 
-            className="flex items-center gap-2 cursor-pointer group"
+          <div
+            className="cursor-pointer group"
             onClick={handleLogoClick}
           >
             <img
               src="/images/logo.png"
               alt="Sortak Logo"
-              className="w-10 h-10 rounded-lg shadow-retro-sm group-hover:shadow-retro-hover group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-all duration-150"
+              className="h-12 w-auto group-hover:scale-105 transition-transform duration-150"
             />
-            <span className="font-display text-3xl text-retro-dark tracking-wide">SORTAK</span>
           </div>
 
           {/* Desktop Navigation */}
