@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Menu, X, User, ChevronDown, LogIn, UserCircle, Package, Aperture, LogOut, Globe, Sun, Moon } from "lucide-react";
+import { ArrowLeft, Menu, X, User, ChevronDown, LogIn, UserCircle, Package, LogOut, Globe, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -137,18 +137,19 @@ export const Navigation = ({
   };
 
   return (
-    <nav className="py-5 border-b-[3px] border-retro-dark bg-retro-cream/95 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+    <nav className="py-2 border-b-[3px] border-retro-dark bg-retro-cream/95 backdrop-blur-sm sticky top-0 z-50">
+      <div className="container mx-auto px-2">
         <div className="flex items-center justify-between">
           {/* Logo as retro badge */}
-          <div 
-            className="flex items-center gap-2 cursor-pointer group"
+          <div
+            className="cursor-pointer group"
             onClick={handleLogoClick}
           >
-            <div className="w-10 h-10 bg-retro-red border-[3px] border-retro-dark rounded-lg shadow-retro-sm flex items-center justify-center group-hover:shadow-retro-hover group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-all duration-150">
-              <Aperture className="w-5 h-5 text-retro-cream" />
-            </div>
-            <span className="font-display text-3xl text-retro-dark tracking-wide">SORTAK</span>
+            <img
+              src="/images/logo.png"
+              alt="Sortak Logo"
+              className="h-28 w-auto group-hover:scale-105 transition-transform duration-150"
+            />
           </div>
 
           {/* Desktop Navigation */}
