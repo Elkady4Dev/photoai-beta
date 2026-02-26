@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Menu, X, User, ChevronDown, LogIn, UserCircle, Package, Aperture, LogOut, Globe, Sun, Moon } from "lucide-react";
+import { ArrowLeft, Menu, X, User, ChevronDown, LogIn, UserCircle, Package, LogOut, Globe, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -145,9 +145,11 @@ export const Navigation = ({
             className="flex items-center gap-2 cursor-pointer group"
             onClick={handleLogoClick}
           >
-            <div className="w-10 h-10 bg-retro-red border-[3px] border-retro-dark rounded-lg shadow-retro-sm flex items-center justify-center group-hover:shadow-retro-hover group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-all duration-150">
-              <Aperture className="w-5 h-5 text-retro-cream" />
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Sortak Logo"
+              className="w-10 h-10 rounded-lg shadow-retro-sm group-hover:shadow-retro-hover group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-all duration-150"
+            />
             <span className="font-display text-3xl text-retro-dark tracking-wide">SORTAK</span>
           </div>
 
