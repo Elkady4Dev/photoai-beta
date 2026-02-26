@@ -137,8 +137,8 @@ export const Navigation = ({
   };
 
   return (
-    <nav className="py-5 border-b-[3px] border-retro-dark bg-retro-cream/95 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+    <nav className="py-2 border-b-[3px] border-retro-dark bg-retro-cream/95 backdrop-blur-sm sticky top-0 z-50">
+      <div className="container mx-auto px-2">
         <div className="flex items-center justify-between">
           {/* Logo as retro badge */}
           <div
@@ -148,7 +148,7 @@ export const Navigation = ({
             <img
               src="/images/logo.png"
               alt="Sortak Logo"
-              className="h-24 w-auto group-hover:scale-105 transition-transform duration-150"
+              className="h-28 w-auto group-hover:scale-105 transition-transform duration-150"
             />
           </div>
 
