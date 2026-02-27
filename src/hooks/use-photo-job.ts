@@ -89,7 +89,8 @@ export function usePhotoJob(options: UsePhotoJobOptions = {}) {
     try {
       // --- Call process-photo edge function ---
       const headers: Record<string, string> = { 'x-tester-auth': testerToken };
-      if (import.meta.env.DEV) {
+      const isDev = import.meta.env.DEV || window.location.hostname === 'sortak-dev.onrender.com';
+      if (isDev) {
         headers['x-use-test'] = 'true';
       }
 
