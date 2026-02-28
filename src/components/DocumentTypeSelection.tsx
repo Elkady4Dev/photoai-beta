@@ -141,7 +141,7 @@ export const DocumentTypeSelection = ({ onSelect, onBack }: DocumentTypeSelectio
                       className="hidden lg:flex items-center gap-1 text-xs hover:bg-muted/50"
                     >
                       {showGuides[doc.id] ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                      {showGuides[doc.id] ? "Hide" : "Show"}
+                      {showGuides[doc.id] ? t('docType.hide') : t('docType.show')}
                     </Button>
                   </div>
 

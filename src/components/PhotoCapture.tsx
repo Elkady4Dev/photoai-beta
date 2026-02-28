@@ -126,6 +126,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     centered: false,
     goodFraming: false,
   });
+  const [flashEnabled, setFlashEnabled] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -213,26 +214,42 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     };
   }, [capturedImage, startCamera, stopCamera]);
 
+  const triggerFlash = () => {
+    setIsFlashing(true);
+    setTimeout(() => setIsFlashing(false), 500);
+  };
+
   // ---- Capture / Retake / Upload ----
   const capturePhoto = () => {
     setIsCapturing(true);
-    
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
 
-    if (ctx) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      // Flip horizontally to match the mirrored preview
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0);
-      const imageData = canvas.toDataURL("image/jpeg", 0.95);
-      setCapturedImage(imageData);
-      stopCamera();
+    const doCapture = () => {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+
+      if (ctx) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        // Flip horizontally to match the mirrored preview
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL("image/jpeg", 0.95);
+        setCapturedImage(imageData);
+        stopCamera();
+      }
+
+      setTimeout(() => setIsCapturing(false), 500);
+    };
+
+    if (flashEnabled) {
+      triggerFlash();
+      window.setTimeout(doCapture, 500);
+      return;
     }
-    setTimeout(() => setIsCapturing(false), 500);
+
+    doCapture();
   };
 
   const retakePhoto = () => {
@@ -284,11 +301,6 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     } else {
       console.error('File input ref is null');
     }
-  };
-
-  const triggerFlash = () => {
-    setIsFlashing(true);
-    setTimeout(() => setIsFlashing(false), 500);
   };
 
   const confirmPhoto = () => {
@@ -437,7 +449,8 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
 
                   {/* Flash Button - Responsive */}
                   <button 
-                    onClick={triggerFlash}
+                    onClick={() => setFlashEnabled(v => !v)}
+                    aria-pressed={flashEnabled}
                     className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-retro-cream/90 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
                   >
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-retro-dark" />
