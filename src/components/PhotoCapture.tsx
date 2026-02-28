@@ -451,7 +451,9 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                   <button 
                     onClick={() => setFlashEnabled(v => !v)}
                     aria-pressed={flashEnabled}
-                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-retro-cream/90 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+                    className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150 ${
+                      flashEnabled ? "bg-retro-mustard/90 ring-2 ring-retro-mustard" : "bg-retro-cream/90"
+                    }`}
                   >
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-retro-dark" />
                   </button>
