@@ -148,7 +148,7 @@ export const Navigation = ({
             <img
               src="/images/logo.png"
               alt="Sortak Logo"
-              className="h-28 w-auto group-hover:scale-105 transition-transform duration-150"
+              className="h-12 sm:h-14 md:h-16 w-auto object-contain group-hover:scale-105 transition-transform duration-150"
             />
           </div>
 

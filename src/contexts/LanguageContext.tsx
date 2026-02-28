@@ -21,6 +21,7 @@ const translations = {
     'nav.faq': 'FAQ',
     'nav.contact': 'Contact',
     'nav.getStarted': 'Get Started',
+    'nav.back': 'Back',
     'nav.myProfile': 'My Profile',
     'nav.signOut': 'Sign Out',
     'nav.signUp': 'Sign Up',
@@ -301,9 +302,41 @@ const translations = {
     'photoCapture.photoCaptured': 'Photo Captured!',
     'photoCapture.retake': 'Retake',
     'photoCapture.useThis': 'Use This',
+
+    'docType.selectPhotoSize': 'Select the photo size you need',
+    'docType.passport': 'Passport',
+    'docType.passportDesc': 'Standard passport and travel photo. White background required.',
+    'docType.passportReqFace': 'Face centered and visible',
+    'docType.passportReqExpression': 'Neutral expression',
+    'docType.passportReqBackground': 'White/light gray background',
+    'docType.passportReqGlasses': 'No glasses',
+    'docType.egyptianPassport': 'Egyptian Passport',
+    'docType.usPassport': 'US Passport',
+    'docType.ukPassport': 'UK Passport',
+    'docType.visa': 'Visa',
+    'docType.visaDesc': 'Square format for visa entry. White background required.',
+    'docType.visaReqFace': 'Full face, front',
+    'docType.visaReqEyes': 'Eyes open',
+    'docType.visaReqBackground': 'White background',
+    'docType.visaReqRecent': 'Recent photo (within 6 months)',
+    'docType.usVisa': 'US Visa',
+    'docType.schengenVisa': 'Schengen Visa',
+    'docType.id': 'ID',
+    'docType.idDesc': 'Standard ID/employee size. Suitable for national cards and employee badges.',
+    'docType.idReqClear': 'Clear facial features',
+    'docType.idReqLighting': 'Proper lighting',
+    'docType.idReqBackground': 'Solid background',
+    'docType.idReqShadows': 'No shadows on the face',
+    'docType.nationalId': 'National ID',
+    'docType.employeeBadge': 'Employee Badge',
+    'docType.commonUses': 'Common uses',
+    'docType.show': 'Show',
+    'docType.hide': 'Hide',
+    'docType.uses': 'uses',
   },
   ar: {
     // Navigation
+    'nav.back': 'رجوع',
     'nav.home': 'الرئيسية',
     'nav.howItWorks': 'كيف يعمل',
     'nav.features': 'المميزات',
@@ -338,93 +371,6 @@ const translations = {
     'signin.backToSignin': '← العودة لتسجيل الدخول',
     'signin.sendReset': 'إرسال رابط إعادة التعيين',
     'signin.sending': 'جاري الإرسال...',
-    
-    // Sign Up
-    'signup.createYour': 'إنشاء',
-    'signup.account': 'حساب',
-    'signup.subtitle': 'انضم إلى Sortak وابدأ في إنشاء صور احترافية',
-    'signup.createBadge': 'إنشاء حساب',
-    'signup.fullName': 'الاسم الكامل',
-    'signup.emailAddress': 'عنوان البريد الإلكتروني',
-    'signup.password': 'كلمة المرور',
-    'signup.confirmPassword': 'تأكيد كلمة المرور',
-    'signup.namePlaceholder': 'أدخل اسمك بالكامل',
-    'signup.emailPlaceholder': 'عنوان البريد الإلكتروني',
-    'signup.passwordPlaceholder': 'أدخل كلمة سر',
-    'signup.confirmPlaceholder': 'تأكيد كلمة السر',
-    'signup.signupButton': 'إنشاء حساب',
-    'signup.creating': 'جاري إنشاء الحساب...',
-    'signup.haveAccount': 'لديك حساب بالفعل؟',
-    'signup.signin': 'تسجيل الدخول',
-    'signup.agreement': 'بإنشاء حساب، فإنك توافق على شروط الخدمة وسياسة الخصوصية.',
-    'signup.terms': 'شروط الخدمة',
-    'signup.privacy': 'سياسة الخصوصية',
-    
-    // Profile
-    'profile.welcome': 'أهلاً بك,',
-    'profile.subtitle': 'عرض تاريخ طلباتك وإدارة حساب Sortak الخاص بك',
-    'profile.loadingOrders': 'جاري تحميل الطلبات...',
-    'profile.noOrders': 'لا توجد طلبات بعد. أنشئ صورتك الأولى!',
-    'profile.createBadge': 'الحساب الشخصي',
-    'profile.orderNumber': 'رقم الطلب',
-    'profile.orderDate': 'تاريخ الطلب',
-    'profile.delivery': 'التسليم',
-    'profile.total': 'المجموع',
-    'profile.download': 'تحميل',
-    'profile.processing': 'جاري التنفيذ',
-    'profile.viewDetails': 'عرض التفاصيل',
-    'profile.accountActions': 'إجراءات الحساب',
-    'profile.newOrder': 'طلب جديد',
-    'profile.signOut': 'تسجيل الخروج',
-    
-    // General
-    'loading': 'جاري التحميل...',
-    'language': 'اللغة',
-    
-    // Photo Capture
-    'photoCapture.loadingOrders': 'جاري تحميل الطلبات...',
-    'photoCapture.noOrders': 'لا توجد طلبات بعد. أنشئ صورتك الأولى!',
-    'photoCapture.startingCamera': 'جاري تشغيل الكاميرا...',
-    'photoCapture.faceDetected': 'تم اكتشاف الوجه',
-    'photoCapture.faceCentered': 'الوجه في المنتصف',
-    'photoCapture.goodFraming': 'إطار جيد',
-    'photoCapture.perfect': 'مثالي! 📸',
-    'photoCapture.centerYourFace': 'ضع وجهك في المنتصف',
-    'photoCapture.moveCloser': 'اقترب من الدليل',
-    'photoCapture.lookingGreat': 'ممتاز! 📸',
-    'photoCapture.photoCaptured': 'تم التقاط الصورة!',
-    'photoCapture.retake': 'إعادة التقاط',
-    'photoCapture.useThis': 'استخدم هذه',
-    'photoCapture.processing': 'جاري التنفيذ',
-    
-    // Document Types
-    'docType.selectPhotoSize': 'اختر حجم الصورة التي تحتاجها',
-    'docType.passport': 'جواز سفر',
-    'docType.passportDesc': 'صورة جواز السفر والسفر القياسية. خلفية بيضاء مطلوبة.',
-    'docType.passportReqFace': 'الوجه في المنتصف ومرئي',
-    'docType.passportReqExpression': 'تعبير محايد',
-    'docType.passportReqBackground': 'خلفية بيضاء/رمادية فاتحة',
-    'docType.egyptianPassport': 'جواز سفر مصري',
-    'docType.usPassport': 'جواز سفر أمريكي',
-    'docType.ukPassport': 'جواز سفر بريطاني',
-    'docType.visa': 'تأشيرة دخول',
-    'docType.visaDesc': 'تنسيق مربع لأشيرة الدخول. خلفية بيضاء مطلوبة.',
-    'docType.visaReqFace': 'الوجه الكامل، الأمام',
-    'docType.visaReqEyes': 'العينان مفتوحتان',
-    'docType.visaReqBackground': 'خلفية بيضاء',
-    'docType.visaReqRecent': 'صورة حديثة (خلال 6 أشهر)',
-    'docType.usVisa': 'تأشيرة دخول أمريكية',
-    'docType.schengenVisa': 'تأشيرة دخول شنجن',
-    'docType.id': 'حجم المحفظة',
-    'docType.idDesc': 'حجم بطاقة الهوية/الموظف القياسي. مناسب للبطاقات الوطنية وشارات الموظفين.',
-    'docType.idReqClear': 'ملامح الوجه الواضح',
-    'docType.idReqLighting': 'إضاءة مناسبة',
-    'docType.idReqBackground': 'خلفية صلبة',
-    'docType.idReqShadows': 'لا توجد ظلال على الوجه',
-    'docType.nationalId': 'بطاقة وطنية',
-    'docType.employeeBadge': 'شارة موظف',
-    
-    // Landing Page
     'hero.aiPowered': 'مدعوم بالذكاء الاصطناعي',
     'hero.studioQuality': 'جودة الاستوديو',
     'hero.pajamaComfort': 'راحة البيجاما',
@@ -624,6 +570,61 @@ const translations = {
     'faq.stillNeedHelpDesc': 'لا تجد ما تبحث عنه؟ فريق الدعم لدينا هنا لمساعدتك في الحصول على صورتك المعرفية المثالية.',
     'faq.emailSupport': 'دعم البريد الإلكتروني',
     'faq.callUs': 'اتصل بنا',
+
+    'photoCapture.startingCamera': 'جاري تشغيل الكاميرا...',
+    'photoCapture.faceDetected': 'تم اكتشاف الوجه',
+    'photoCapture.faceCentered': 'الوجه في المنتصف',
+    'photoCapture.goodFraming': 'إطار جيد',
+    'photoCapture.perfect': 'مثالي! 📸',
+    'photoCapture.centerYourFace': 'ضع وجهك في المنتصف',
+    'photoCapture.moveCloser': 'اقترب من الدليل',
+    'photoCapture.lookingGreat': 'ممتاز! 📸',
+    'photoCapture.photoCaptured': 'تم التقاط الصورة!',
+    'photoCapture.retake': 'إعادة التقاط',
+    'photoCapture.useThis': 'استخدم هذه',
+
+    'photocapture.startingcamera': 'جاري تشغيل الكاميرا...',
+    'photocapture.facedetected': 'تم اكتشاف الوجه',
+    'photocapture.facecentered': 'الوجه في المنتصف',
+    'photocapture.goodframing': 'إطار جيد',
+    'photocapture.perfect': 'مثالي! 📸',
+    'photocapture.centeryourface': 'ضع وجهك في المنتصف',
+    'photocapture.movecloser': 'اقترب من الدليل',
+    'photocapture.lookinggreat': 'ممتاز! 📸',
+    'photocapture.photocaptured': 'تم التقاط الصورة!',
+    'photocapture.retake': 'إعادة التقاط',
+    'photocapture.usethis': 'استخدم هذه',
+
+    'docType.selectPhotoSize': 'اختر حجم الصورة التي تحتاجها',
+    'docType.passport': 'جواز سفر',
+    'docType.passportDesc': 'صورة جواز السفر والسفر القياسية. خلفية بيضاء مطلوبة.',
+    'docType.passportReqFace': 'الوجه في المنتصف ومرئي',
+    'docType.passportReqExpression': 'تعبير محايد',
+    'docType.passportReqBackground': 'خلفية بيضاء/رمادية فاتحة',
+    'docType.passportReqGlasses': 'بدون نظارات',
+    'docType.egyptianPassport': 'جواز سفر مصري',
+    'docType.usPassport': 'جواز سفر أمريكي',
+    'docType.ukPassport': 'جواز سفر بريطاني',
+    'docType.visa': 'تأشيرة دخول',
+    'docType.visaDesc': 'تنسيق مربع لتأشيرة الدخول. خلفية بيضاء مطلوبة.',
+    'docType.visaReqFace': 'الوجه بالكامل، للأمام',
+    'docType.visaReqEyes': 'العينان مفتوحتان',
+    'docType.visaReqBackground': 'خلفية بيضاء',
+    'docType.visaReqRecent': 'صورة حديثة (خلال 6 أشهر)',
+    'docType.usVisa': 'تأشيرة دخول أمريكية',
+    'docType.schengenVisa': 'تأشيرة دخول شنجن',
+    'docType.id': 'هوية',
+    'docType.idDesc': 'حجم بطاقة الهوية/الموظف القياسي. مناسب للبطاقات الوطنية وشارات الموظفين.',
+    'docType.idReqClear': 'ملامح وجه واضحة',
+    'docType.idReqLighting': 'إضاءة مناسبة',
+    'docType.idReqBackground': 'خلفية موحدة',
+    'docType.idReqShadows': 'لا توجد ظلال على الوجه',
+    'docType.nationalId': 'بطاقة وطنية',
+    'docType.employeeBadge': 'شارة موظف',
+    'docType.commonUses': 'الاستخدامات الشائعة',
+    'docType.show': 'عرض',
+    'docType.hide': 'إخفاء',
+    'docType.uses': 'الاستخدامات',
   }
 };
 
