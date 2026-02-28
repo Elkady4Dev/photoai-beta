@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { Camera, RotateCcw, Check, AlertCircle, Lightbulb, Focus, Upload, User, X, Sparkles, Zap, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner, LoadingOverlay } from "@/components/LoadingSpinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PhotoCaptureProps {
   onPhotoCapture: (imageDataUrl: string) => void;
@@ -116,6 +117,7 @@ function analyseFrame(
 }
 
 export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
+  const { t } = useLanguage();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isCameraLoading, setIsCameraLoading] = useState(true);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -125,6 +127,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     goodFraming: false,
   });
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [isFlashing, setIsFlashing] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -284,6 +287,11 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     }
   };
 
+  const triggerFlash = () => {
+    setIsFlashing(true);
+    setTimeout(() => setIsFlashing(false), 500);
+  };
+
   const openGallery = () => {
     // Load images from localStorage or recent captures
     const savedImages = localStorage.getItem('galleryImages');
@@ -307,20 +315,24 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
   const allValid = validation.faceDetected && validation.centered && validation.goodFraming;
 
   const validationItems = [
-    { key: "faceDetected", label: "Face detected", icon: User, valid: validation.faceDetected },
-    { key: "centered", label: "Face centered", icon: Focus, valid: validation.centered },
-    { key: "goodFraming", label: "Good framing", icon: Lightbulb, valid: validation.goodFraming },
+    { key: "faceDetected", label: t('photoCapture.faceDetected'), icon: User, valid: validation.faceDetected },
+    { key: "centered", label: t('photoCapture.faceCentered'), icon: Focus, valid: validation.centered },
+    { key: "goodFraming", label: t('photoCapture.goodFraming'), icon: Lightbulb, valid: validation.goodFraming },
   ];
 
   // Frame turns green when all conditions are met
   const frameColor = allValid ? "border-retro-teal" : "border-retro-dark/50";
-  const frameHint = allValid ? "Perfect! 📸" : "Center your face";
+  const frameHint = allValid ? t('photoCapture.perfect') : t('photoCapture.centerYourFace');
 
   return (
-    <div className="min-h-screen bg-retro-cream/50 grain-overlay relative">
-      {/* Full Screen Camera View */}
-      <div className="fixed inset-0 bg-black">
-        <div className="relative h-full w-full">
+    <div className="h-[100dvh] bg-retro-cream/50 grain-overlay relative overflow-y-hidden flex items-center justify-center p-4">
+      {/* Flash Effect Overlay */}
+      {isFlashing && (
+        <div className="fixed inset-0 bg-white z-[100] animate-pulse" />
+      )}
+      
+      {/* Contained Camera View */}
+      <div className="relative w-full max-w-4xl h-full max-h-[90vh] rounded-2xl shadow-retro-lg overflow-hidden bg-black">
           {!capturedImage ? (
             <>
               {/* Camera Feed */}
@@ -337,7 +349,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
               {isCameraLoading && (
                 <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-20">
                   <div className="text-center">
-                    <LoadingSpinner size="lg" text="Starting Camera..." />
+                    <LoadingSpinner size="lg" text={t('photoCapture.startingCamera')} />
                   </div>
                 </div>
               )}
@@ -361,7 +373,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                         ? "bg-retro-teal border-retro-teal text-retro-cream shadow-retro-sm" 
                         : "bg-retro-cream border-retro-dark text-retro-dark shadow-retro-sm"
                     }`}>
-                      <span className="font-display text-xs sm:text-sm font-bold tracking-wider">
+                      <span className="font-display text-sm sm:text-base lg:text-lg tracking-wider">
                         {frameHint}
                       </span>
                     </div>
@@ -446,7 +458,10 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                   </div>
 
                   {/* Flash Button - Responsive */}
-                  <button className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-retro-cream/90 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150">
+                  <button 
+                    onClick={triggerFlash}
+                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-retro-cream/90 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150"
+                  >
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-retro-dark" />
                   </button>
                 </div>
@@ -455,8 +470,8 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                 <div className="mt-3 sm:mt-4 lg:mt-6 text-center">
                   <div className="inline-flex items-center gap-1 sm:gap-2 bg-retro-cream/90 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg px-2 sm:px-3 lg:px-4 py-1 sm:py-2 shadow-retro-sm">
                     <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-retro-dark" />
-                    <span className="font-display text-[10px] sm:text-xs lg:text-sm text-retro-dark tracking-wider">
-                      {allValid ? "Looking great! 📸" : "Move closer to the guide"}
+                    <span className="font-display text-sm sm:text-base lg:text-lg text-retro-dark tracking-wider">
+                      {allValid ? t('photoCapture.lookingGreat') : t('photoCapture.moveCloser')}
                     </span>
                   </div>
                 </div>
@@ -481,8 +496,8 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                 </button>
 
                 <div className="sticker bg-retro-teal border-[2px] sm:border-[3px] border-retro-teal rounded-lg px-2 sm:px-3 lg:px-4 py-1 sm:py-2 shadow-retro-sm">
-                  <span className="font-display text-[10px] sm:text-xs lg:text-sm text-retro-cream font-bold tracking-wider">
-                    Photo Captured!
+                  <span className="font-display text-sm sm:text-base lg:text-lg text-retro-cream font-bold tracking-wider">
+                    {t('photoCapture.photoCaptured')}
                   </span>
                 </div>
 
@@ -504,7 +519,7 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                     onClick={retakePhoto}
                   >
                     <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    <span className="text-[10px] sm:text-xs">Retake</span>
+                    <span className="text-sm sm:text-base">{t('photoCapture.retake')}</span>
                   </Button>
                   <Button
                     variant="hero"
@@ -513,14 +528,13 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
                     onClick={confirmPhoto}
                   >
                     <Check className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    <span className="text-[10px] sm:text-xs">Use This</span>
+                    <span className="text-sm sm:text-base">{t('photoCapture.useThis')}</span>
                   </Button>
                 </div>
               </div>
             </>
           )}
         </div>
-      </div>
 
       {/* Hidden Elements */}
       <canvas ref={canvasRef} className="hidden" />

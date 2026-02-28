@@ -2,66 +2,68 @@ import { Check, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { DocumentType } from "@/pages/Index";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DocumentTypeSelectionProps {
   onSelect: (type: DocumentType) => void;
   onBack: () => void;
 }
 
-const documentTypes = [
-  {
-    id: "passport" as DocumentType,
-    title: "4 x 6",
-    size: "4\" x 6\"",
-    description: "Standard passport & travel document photo. White background required.",
-    requirements: [
-      "Face centered and visible",
-      "Neutral expression",
-      "No glasses or headwear",
-      "White/light gray background",
-    ],
-    guide: [
-      { name: "Egyptian Passport", size: "4 x 6" },
-      { name: "US Passport", size: "2 x 2" },
-      { name: "UK Passport", size: "35 x 45 mm" },
-    ]
-  },
-  {
-    id: "visa" as DocumentType,
-    title: "2 x 2",
-    size: "2\" x 2\"",
-    description: "Square format for visa applications. Plain white background required.",
-    requirements: [
-      "Full face, front view",
-      "Eyes open and visible",
-      "Plain white background",
-      "Recent photo (within 6 months)",
-    ],
-    guide: [
-      { name: "US Visa", size: "2 x 2" },
-      { name: "Schengen Visa", size: "35 x 45 mm" },
-    ]
-  },
-  {
-    id: "id" as DocumentType,
-    title: "Wallet Size",
-    size: "2.5\" x 3.5\"",
-    description: "Standard wallet/ID card size. Suitable for national IDs and employee badges.",
-    requirements: [
-      "Clear facial features",
-      "Proper lighting",
-      "Solid background",
-      "No shadows on face",
-    ],
-    guide: [
-      { name: "National ID", size: "2.5 x 3.5" },
-      { name: "Employee Badge", size: "2 x 3" },
-    ]
-  },
-];
-
 export const DocumentTypeSelection = ({ onSelect, onBack }: DocumentTypeSelectionProps) => {
+  const { t, isRTL } = useLanguage();
   const [showGuides, setShowGuides] = useState<{ [key: string]: boolean }>({});
+
+  const documentTypes = [
+    {
+      id: "passport" as DocumentType,
+      title: t('docType.passport'),
+      size: "4\" x 6\"",
+      description: t('docType.passportDesc'),
+      requirements: [
+        t('docType.passportReqFace'),
+        t('docType.passportReqExpression'),
+        t('docType.passportReqBackground'),
+        t('docType.passportReqGlasses'),
+      ],
+      guide: [
+        { name: t('docType.egyptianPassport'), size: "4 x 6" },
+        { name: t('docType.usPassport'), size: "2 x 2" },
+        { name: t('docType.ukPassport'), size: "35 x 45 mm" },
+      ]
+    },
+    {
+      id: "visa" as DocumentType,
+      title: t('docType.visa'),
+      size: "2\" x 2\"",
+      description: t('docType.visaDesc'),
+      requirements: [
+        t('docType.visaReqFace'),
+        t('docType.visaReqEyes'),
+        t('docType.visaReqBackground'),
+        t('docType.visaReqRecent'),
+      ],
+      guide: [
+        { name: t('docType.usVisa'), size: "2 x 2" },
+        { name: t('docType.schengenVisa'), size: "35 x 45 mm" },
+      ]
+    },
+    {
+      id: "id" as DocumentType,
+      title: t('docType.id'),
+      size: "2.5\" x 3.5\"",
+      description: t('docType.idDesc'),
+      requirements: [
+        t('docType.idReqClear'),
+        t('docType.idReqLighting'),
+        t('docType.idReqBackground'),
+        t('docType.idReqShadows'),
+      ],
+      guide: [
+        { name: t('docType.nationalId'), size: "2.5 x 3.5" },
+        { name: t('docType.employeeBadge'), size: "2 x 3" },
+      ]
+    },
+  ];
 
   const toggleGuide = (id: string) => {
     setShowGuides(prev => ({
@@ -74,7 +76,7 @@ export const DocumentTypeSelection = ({ onSelect, onBack }: DocumentTypeSelectio
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <p className="text-center text-muted-foreground mb-8">
-            Choose the photo size you need. Each has specific dimensions and requirements.
+            {t('docType.selectPhotoSize')}
           </p>
 
           {/* Back Button */}
@@ -86,7 +88,7 @@ export const DocumentTypeSelection = ({ onSelect, onBack }: DocumentTypeSelectio
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              {t('nav.back')}
             </Button>
           </div>
 
@@ -126,7 +128,7 @@ export const DocumentTypeSelection = ({ onSelect, onBack }: DocumentTypeSelectio
                       className="flex items-center gap-2 text-xs lg:hidden"
                     >
                       {showGuides[doc.id] ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                      {showGuides[doc.id] ? "Hide" : "Show"} Uses
+                      {showGuides[doc.id] ? t('docType.hide') : t('docType.show')} {t('docType.uses')}
                     </Button>
                     {/* Desktop toggle - smaller and inline */}
                     <Button
@@ -146,7 +148,7 @@ export const DocumentTypeSelection = ({ onSelect, onBack }: DocumentTypeSelectio
                   {/* Guide content - responsive */}
                   <div className={`${showGuides[doc.id] ? 'block' : 'hidden'} lg:block lg:flex-shrink-0 lg:w-48 ${!showGuides[doc.id] ? 'lg:hidden' : ''}`}>
                     <div className="bg-muted/50 rounded-lg p-3 border border-border mt-4 lg:mt-0">
-                      <h4 className="font-medium text-foreground text-sm mb-2">Common Uses:</h4>
+                      <h4 className="font-medium text-foreground text-sm mb-2">{t('docType.commonUses')}</h4>
                       <div className="space-y-1">
                         {doc.guide.map((item, index) => (
                           <div key={index} className="flex justify-between items-center text-xs">
