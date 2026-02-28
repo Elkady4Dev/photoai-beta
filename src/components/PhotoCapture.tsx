@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Camera, RotateCcw, Check, AlertCircle, Lightbulb, Focus, Upload, User, X, Sparkles, Zap, Image } from "lucide-react";
+import { Camera, RotateCcw, Check, AlertCircle, Lightbulb, Focus, Upload, User, X, Sparkles, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner, LoadingOverlay } from "@/components/LoadingSpinner";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -126,7 +126,6 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     centered: false,
     goodFraming: false,
   });
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [isFlashing, setIsFlashing] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -292,22 +291,9 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
     setTimeout(() => setIsFlashing(false), 500);
   };
 
-  const openGallery = () => {
-    // Load images from localStorage or recent captures
-    const savedImages = localStorage.getItem('galleryImages');
-    if (savedImages) {
-      setGalleryImages(JSON.parse(savedImages));
-    }
-    // For now, just trigger file upload as gallery
-    triggerFileUpload();
-  };
-
   const confirmPhoto = () => {
     if (capturedImage) {
       // Save to gallery
-      const updatedGallery = [...galleryImages, capturedImage];
-      setGalleryImages(updatedGallery);
-      localStorage.setItem('galleryImages', JSON.stringify(updatedGallery));
       onPhotoCapture(capturedImage);
     }
   };
@@ -423,18 +409,10 @@ export const PhotoCapture = ({ onPhotoCapture, onBack }: PhotoCaptureProps) => {
               {/* Bottom Controls - Responsive */}
               <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-6 z-30">
                 <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
-                  {/* Gallery Button */}
-                  <button
-                    onClick={openGallery}
-                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-retro-cream/90 backdrop-blur-sm border-[2px] sm:border-[3px] border-retro-dark rounded-lg flex items-center justify-center shadow-retro-sm hover:shadow-retro-hover hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-150 relative"
-                  >
-                    <Image className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-retro-dark" />
-                    {galleryImages.length > 0 && (
-                      <div className="absolute -top-1 sm:-top-1 -right-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 bg-retro-red border-[2px] sm:border-[2px] border-retro-cream rounded-full flex items-center justify-center">
-                        <span className="text-[8px] sm:text-xs font-bold text-retro-cream">{galleryImages.length}</span>
-                      </div>
-                    )}
-                  </button>
+                  <div
+                    aria-hidden
+                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 invisible"
+                  />
 
                   {/* Capture Button - Centered */}
                   <div className="flex-1 flex justify-center">
