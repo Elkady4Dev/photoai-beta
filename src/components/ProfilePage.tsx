@@ -116,11 +116,11 @@ export const ProfilePage = () => {
             {/* Orders list */}
             {loadingOrders ? (
               <div className="text-center py-12 text-retro-dark-mid font-medium">
-                Loading orders…
+                {t('profile.loadingOrders')}
               </div>
             ) : orders.length === 0 ? (
               <div className="text-center py-12 text-retro-dark-mid font-medium">
-                No orders yet. Create your first photo!
+                {t('profile.noOrders')}
               </div>
             ) : (
               <div className="grid gap-6">

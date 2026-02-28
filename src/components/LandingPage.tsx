@@ -463,7 +463,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                 <p className="font-display-serif italic text-retro-mustard text-[1.5rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3rem] mb-4 sm:mb-6 text-center sm:text-left">
                   {t('cta.subtitle')}
                 </p>
-                <p className="text-retro-cream/50 text-sm sm:text-base mb-6 sm:mb-8 max-w-md mx-auto sm:mx-0 font-medium text-center sm:text-left">
+                <p className="text-sm sm:text-base mb-6 sm:mb-8 max-w-md mx-auto sm:mx-0 font-medium text-center sm:text-left" style={{color: 'rgba(255,255,255,0.7)'}}>
                   {t('cta.description')}
                 </p>
                 <div className="flex justify-center sm:justify-start">
